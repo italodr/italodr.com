@@ -1,0 +1,31 @@
+:root {
+  --selection-highlight: hsla(197, 70%, 40%, .4);
+}
+
+.remark-highlight {
+  --selection-highlight: hsla(197, 30%, 40%, .4);
+}
+
+.remark-highlight pre {
+  font-size: .9rem !important;
+}
+
+code[class*="language-"],
+pre[class*="language-"] {
+  font-family: AzeretMono, Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  letter-spacing: 0;
+  line-height: 1.8;
+  text-shadow: none !important;
+}
+
+.token {
+  background: none !important;
+}
+
+::-moz-selection {
+  background: var(--selection-highlight) !important;
+}
+
+::selection {
+  background: var(--selection-highlight) !important;
+}
