@@ -21,7 +21,7 @@ Para listar las dependencias de nuestro proyecto podemos utilizar el siguiente c
 yarn list
 ```
 
-![Yarn list](./img/yarn-list.png)
+![Yarn list](/images/posts/auditoria-de-dependencias-con-yarn/yarn-list.png)
 
 Existen [otras opciones interesantes de yarn list](https://classic.yarnpkg.com/en/docs/cli/list/) para filtrar el resultado.
 
@@ -35,7 +35,7 @@ Si ejecutamos el siguiente comando, obtendremos la información necesaria para s
 yarn why optimist
 ```
 
-![Yarn why](./img/yarn-why.png)
+![Yarn why](/images/posts/auditoria-de-dependencias-con-yarn/yarn-why.png)
 
 Podéis ver [otras opciones interesantes de yarn why](https://classic.yarnpkg.com/en/docs/cli/why/) que nos ayudan a refinar la búsqueda.
 
@@ -47,7 +47,7 @@ Con estos comandos trazamos de dónde provenía el error, pero podemos utilizar 
 yarn audit
 ```
 
-![Yarn audit](./img/yarn-audit.png)
+![Yarn audit](/images/posts/auditoria-de-dependencias-con-yarn/yarn-audit.png)
 
 Si queréis [saber más sobre yarn audit](https://classic.yarnpkg.com/en/docs/cli/audit/) podéis acceder a la información que nos ofrecen en su página.
 
