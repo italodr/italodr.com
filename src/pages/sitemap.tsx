@@ -28,7 +28,7 @@ const Sitemap: NextPage<any> = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  const posts = await getAllPosts({ order: true, legal: true });
+  const posts = await getAllPosts({ order: true });
   const categories = await getAllCategories();
 
   const staticPages = [{ frontmatter: { slug: '' } }, { frontmatter: { slug: 'sitemap' } }];

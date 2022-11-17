@@ -23,7 +23,9 @@ const Home: NextPage<any> = ({ posts }) => {
 };
 
 export const getStaticProps = async () => {
-  const posts = await getAllPosts({ order: true });
+  let posts = await getAllPosts({ order: true });
+  posts = posts.filter(({ frontmatter: { terms } }) => terms && !terms.includes('legal'));
+
   return {
     props: {
       posts,

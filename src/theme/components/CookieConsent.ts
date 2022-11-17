@@ -6,6 +6,7 @@ const CookieConsent = {
   baseStyle: ({ colorMode }: StyleProps) => ({
     container: {
       background: 'white',
+      boxShadow: '1px 0.1px 10px 6px hsl(0deg 0% 0% / 15%)',
       color: 'black',
       bottom: 4,
       position: 'fixed',

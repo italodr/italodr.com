@@ -4,7 +4,7 @@ slug: politica-cookies
 date: '2022-11-07'
 updated: null
 published: true
-description: Lorem ipsum dolor sit amet consectetur adipiscing elit faucibus suscipit, egestas vehicula pharetra class convallis felis commodo sed, mi penatibus praesent bibendum sodales nisi himenaeos morbi. Sociosqu litora mollis nullam enim, velit aenean cubilia ad, rutrum ridiculus sollicitudin.
+description: Política de cookies de italodr.
 search: false
 index: false
 follow: false
@@ -77,5 +77,5 @@ Puedes permitir, bloquear o eliminar las cookies instaladas en tu equipo en cual
 | _ga | 2 años | Se usa para distinguir a los usuarios. |
 | _ga\_\<container-id\> | 2 años | Se usa para mantener el estado de la sesión. |
 
-\* Información obtenida de [Uso de cookies: gtag.js (Google Analytics 4)](https://developers.google.com/analytics/devguides/collection/gtagjs/cookie-usage?hl=es#gtagjs_google_analytics_4_-_cookie_usage)
+\* Información obtenida de <a href="https://developers.google.com/analytics/devguides/collection/gtagjs/cookie-usage?hl=es#gtagjs_google_analytics_4_-_cookie_usage" target="_blank" rel="noreferrer noopener">Uso de cookies: gtag.js (Google Analytics 4)</a>
  
