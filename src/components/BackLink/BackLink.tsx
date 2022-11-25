@@ -1,6 +1,10 @@
-import { Link } from '../Link';
+import { Link, LinkProps } from '../Link';
 
-export const BackLink = ({ text = 'Volver al listado', ...props }) => (
+interface BackLinkProps extends LinkProps {
+  text?: string;
+}
+
+export const BackLink = ({ text = 'Volver al listado', ...props }: BackLinkProps) => (
   <Link href="/" {...props}>
     &larr; {text}
   </Link>

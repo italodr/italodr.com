@@ -37,7 +37,29 @@ Lorem ipsum dolor sit amet consectetur adipiscing[^1] elit faucibus suscipit, eg
 
 > Lorem ipsum dolor sit amet consectetur adipiscing elit faucibus suscipit, egestas vehicula pharetra class convallis felis commodo sed, mi penatibus praesent bibendum sodales nisi himenaeos morbi. Sociosqu litora mollis nullam enim, velit aenean cubilia ad, rutrum ridiculus sollicitudin. Est gravida curabitur ridiculus platea morbi sapien sociosqu phasellus ullamcorper tortor, semper dapibus massa euismod senectus himenaeos aenean facilisis varius inceptos conubia, nulla lacus elementum nam tristique nunc libero at enim.
 
----
+
+## Math stuff
+
+Lorem ipsum dolor sit $x + y = 2$ amet consectetur adipisicing elit. Doloribus temporibus vel voluptates corrupti cupiditate molestiae laboriosam molestias nulla architecto provident illum, quae veritatis. [Debitis cumque cupiditate eveniet](https://acme.io) provident nulla commodi reprehenderit animi facilis dolorum nostrum officiis, rerum sed facere et eligendi mollitia totam earum accusamus voluptatibus dolores.
+
+$$
+\begin{aligned}
+(x+y)(x-y)=x^{2}-y^{2} \\
+(x_{1}+x_{2})^2=x_{1}^{2}+2x_{1}x_{2}+x_{2}^{2}
+\end{aligned}
+$$
+
+$x_{ab}+x_{12}=0$
+
+
+```
+.
+├── folder-1
+│   ├── file-1
+│   └── file2
+└── folder-2
+    └── file-1
+```
 
 > **Multiple line blockquote**
 >

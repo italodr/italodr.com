@@ -157,6 +157,13 @@ export const styles = {
         my: 0,
       },
     },
+    'iframe': {
+      my: 8,
+    },
+    '.scroller': {
+      overflowX: 'auto',
+      width: '100%',
+    },
     '.sr-only': {
       clip: 'rect(1px, 1px, 1px, 1px)',
       clipPath: 'inset(50%)',

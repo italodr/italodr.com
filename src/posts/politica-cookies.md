@@ -59,23 +59,29 @@ Puedes permitir, bloquear o eliminar las cookies instaladas en tu equipo en cual
 
 ### 4.1. Obligatorias
 
+<div class="scroller">
 | Nombre | duración  |  descripción  |
 | :- | :- | :- |
 | gravatar | 1 año | Se usa para identificar el uso de la plataforma. |
 | is-logged-in | 1 año | Se usa para identificar el uso de la plataforma. |
+</div>
 
 ### 4.2. De preferencias o personalización
 
+<div class="scroller">
 | Nombre | duración  |  descripción  |
 | :- | :- | :- |
 | cookie-consent | 1 año | Se usa para recordar el consentimiento. |
+</div>
 
 ### 4.3. De análisis o medición
 
+<div class="scroller">
 | Nombre | duración  |  descripción  |
 | :- | :- | :- |
 | _ga | 2 años | Se usa para distinguir a los usuarios. |
 | _ga\_\<container-id\> | 2 años | Se usa para mantener el estado de la sesión. |
+</div>
 
 \* Información obtenida de <a href="https://developers.google.com/analytics/devguides/collection/gtagjs/cookie-usage?hl=es#gtagjs_google_analytics_4_-_cookie_usage" target="_blank" rel="noreferrer noopener">Uso de cookies: gtag.js (Google Analytics 4)</a>
  

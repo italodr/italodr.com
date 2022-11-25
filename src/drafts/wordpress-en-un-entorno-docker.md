@@ -1,6 +1,6 @@
 ---
-title: Cambiar urls de una base de datos de Wordpress
-slug: cambiar-urls-de-una-base-de-datos-de-wordpress
+title: Wordpress en un entorno docker
+slug: wordpress-en-un-entorno-docker
 date: '2020-04-25'
 updated: null
 published: false

@@ -13,6 +13,7 @@ const Footer = {
     wrapper: {
       alignItems: { base: 'initial', md: 'center' },
       flexDirection: { base: 'column-reverse', md: 'row' },
+      mb: { base: 4, md: 0 },
     },
     text: {
       borderStyle: 'solid',
