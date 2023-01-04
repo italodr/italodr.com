@@ -164,6 +164,12 @@ export const styles = {
       overflowX: 'auto',
       width: '100%',
     },
+    '.contain-image': {
+      'ml': 0,
+      'mx': 'auto',
+      'maxWidth': '100%',
+      'width': 'auto',
+    },
     '.sr-only': {
       clip: 'rect(1px, 1px, 1px, 1px)',
       clipPath: 'inset(50%)',
