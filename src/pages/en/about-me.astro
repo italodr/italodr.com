@@ -1,0 +1,137 @@
+---
+import DefaultLayout from "@/layouts/Default.astro";
+import Hero from "@/components/Hero.astro";
+import Badge from "@/components/Badge.astro";
+import ExternalLink from "@/components/ExternalLink.astro";
+import { LINKEDIN_URL } from "@/consts";
+---
+
+<DefaultLayout title="About me">
+  <Hero>
+    <h1><Badge class="hero-badge">About me</Badge></h1>
+    <p class="h2 display">
+      I'm Italo Devoto Ramella, <b>full-stack engineer</b> and technology leader with <b
+        >strategic mindset</b
+      >, based in Barcelona, Spain.
+    </p>
+  </Hero>
+  <section class="container container--small">
+    <h2>Latest professional experiences</h2>
+    <ul class="experience">
+      <li>
+        <Badge>Head of Product & Tech Lead</Badge>
+        <h3>netzstrategen GmbH</h3>
+        <p>
+          Currently working at <ExternalLink href="https://netzstrategen.com"
+            >netzstrategen GmbH</ExternalLink
+          > as Head of Product & Tech Lead.
+        </p>
+        <p>My key responsibilities include:</p>
+        <ul class="list">
+          <li>
+            <b>Product ownership</b>: discovery, prioritization, and documentation to turn business
+            goals into measurable roadmaps.
+          </li>
+          <li>
+            End to end <b>technical leadership</b> in Next.js, PostgreSQL and MongoDB, defining architecture
+            and cloud deployments.
+          </li>
+          <li>
+            <b>Process governance</b>: internal component library aligning design & code to speed up
+            releases.
+          </li>
+          <li>
+            <b>Analytics & AI</b>: data pipelines, dashboards, and ML/AI services to drive KPI-based
+            decisions.
+          </li>
+          <li>
+            <b>Team leadership</b>: planning, estimations, and mentoring within a DevOps culture and
+            continuous improvement mindset.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <Badge>Lead Frontend Developer</Badge>
+        <h3>Stooa</h3>
+        <p>
+          Worked at <ExternalLink href="https://stooa.com">Stooa</ExternalLink> as Lead Frontend Developer.
+        </p>
+        <p>My main responsibilities were:</p>
+        <ul class="list">
+          <li>
+            Built the initial version of the platform (React + Redux + Jitsi) for <b
+              >real-time fishbowl sessions.</b
+            >.
+          </li>
+          <li>
+            Defined state patterns, routing, and UI foundations for a scalable and <b
+              >reusable component system.</b
+            >.
+          </li>
+          <li>
+            Co-led the project definition and structure as an <b>open-source initiative</b>,
+            enabling external contributions and code transparency.
+          </li>
+          <li>
+            Worked closely with Design/UX to rapidly iterate on prototypes and improve conversion
+            metrics.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <Badge>Head of Frontend</Badge>
+        <h3>Runroom</h3>
+        <p>
+          Started as a Full-Stack Developer at <ExternalLink href="https://runroom.com"
+            >Runroom</ExternalLink
+          >, building web apps using PHP, Symfony, Drupal, Twig, React, and SCSS. During this phase,
+          I developed an internal product to manage and automate content creation — <b
+            >reducing development time by ~60%</b
+          >.
+        </p>
+        <p>Later, I led the frontend team as Head of Frontend.</p>
+        <p>My key responsibilities were:</p>
+        <ul class="list">
+          <li>
+            <b>Led a team of 8 developers</b>, setting quality standards, Git flow, and style
+            guides.
+          </li>
+          <li>Participated in <b>strategic project planning</b> and tech stack decisions.</li>
+          <li>Ran <b>performance and accessibility audits</b> for several clients.</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+  <section class="container container--small">
+    <h2>Teaching</h2>
+    <ul>
+      <li>
+        <Badge>BAU - Design University of Barcelona</Badge>
+        <p>Lecturer / Tech Coach for the <b>Master's in Digital Experience Design</b></p>
+      </li>
+      <li>
+        <Badge>IED - Istituto Europeo di Design</Badge>
+        <p>Lecturer in the <b>Business Design Course</b></p>
+      </li>
+    </ul>
+  </section>
+  <section class="container container--small">
+    <p>
+      For more information, feel free to <ExternalLink href={LINKEDIN_URL}
+        >check my LinkedIn profile</ExternalLink
+      >.
+    </p>
+  </section>
+</DefaultLayout>
+
+<style>
+  h1 {
+    margin-bottom: 0;
+  }
+
+  .experience {
+    > li:not(:last-child) {
+      margin-bottom: 4rem;
+    }
+  }
+</style>

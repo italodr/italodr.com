@@ -1,0 +1,136 @@
+---
+title: "Capítulo 7: Mantenimiento del monorepo con Syncpack y buenas prácticas"
+slug: "libreria-de-componentes-en-monorepo/mantenimiento-del-monorepo-con-syncpack-y-buenas-practicas"
+description: "Ahora tenemos un monorepo robusto, que compila rápido, valida tests y tiene un workflow de publicación. Ahora es momento de mantenerlo a largo plazo. En este capítulo veremos cómo usar Syncpack para mantener las dependencias en orden, cómo limpiar correctamente las builds, y qué hábitos conviene adoptar para evitar la entropía."
+categories: ["Desarrollo"]
+tags: "react,components,monorepo,syncpack"
+pubDate: "2025-05-05"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+import InternalLink from "@/components/InternalLink.astro";
+
+<ExternalLink href="https://github.com/italodr/demo-component-library/commit/94239bb3719796dad6e295b5723f4061ec66466a">Enlace al commit en Github de este capítulo</ExternalLink>
+
+## Herramientas clave para el mantenimiento
+
+| Herramienta | Uso principal |
+| :--- | :--- |
+| Syncpack | Sincronizar versiones de dependencias en todos los paquetes |
+| Turborepo | Limpiar outputs de build automáticamente |
+| pnpm filters | Ejecutar tareas en paquetes específicos (aunque ya lo hemos visto anteriormente) |
+| Convenciones | Nombres, estructura y configuración común |
+
+## Configurar Syncpack
+
+Desde la raíz de tu proyecto:
+
+```bash
+pnpm add -D syncpack -w
+```
+
+En tu `package.json` de la raíz, añade los scripts útiles:
+
+```json
+"scripts": {
+  "deps:check": "syncpack list --types \"!local\"",
+  "deps:fix": "syncpack fix --types \"!local\"",
+  "deps:update": "syncpack update --types \"!local\""
+}
+```
+
+Estos scripts te permitirán:
+
+- Detectar versiones duplicadas de una misma librería.
+- Alinear todas las versiones a la más común.
+- Forzar actualizaciones o verificar cambios en pull requests.
+
+## Ejemplo de uso
+
+```bash
+pnpm deps:check            # Listar dependencias inconsistentes
+pnpm deps:fix              # Forzar que todas usen la misma versión
+pnpm deps:update           # Actualizar automáticamente todas a su última versión
+```
+
+**Consejo**: Añade `deps:update-check` al workflow de CI si quieres que falle cuando alguien introduce versiones no sincronizadas.
+
+## Limpieza de builds
+
+En el `package.json` de la raíz añadiremos los scripts para limpiar los outputs de build:
+
+```json
+"scripts": {
+  "clean": "turbo run clean && rm -rf node_modules",
+  "clean:all": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +"
+}
+```
+
+Y, lo siguiente en el `package.json` de cada paquete:
+
+```json
+"scripts": {
+  "clean": "rm -rf dist"
+}
+```
+
+Ahora, para eliminar todos los `dist/` y `node_modules/` de forma segura podemos ejecutar:
+
+```bash
+pnpm clean
+```
+
+## Buenas prácticas para un monorepo saludable
+
+### 1. Usa workspace:* para dependencias internas
+
+Asegúrate de que los paquetes internos estén conectados:
+
+```json
+"@myui/tsconfig": "workspace:*"
+```
+
+Esto evita errores de versiones y facilita testing cruzado.
+
+### 2. Evita dependencias duplicadas entre root y paquetes
+
+No pongas react, eslint, jest, etc. como dependencia en cada paquete. Decláralas en el `package.json` raíz, y usa `peerDependencies` si necesitas indicar que se requiere algo pero no incluirlo en el build.
+
+### 3. Usa turbo run con filtros para scripts por paquete
+
+```bash
+pnpm build --filter @myui/hero
+```
+
+O para múltiples builds:
+
+```bash
+pnpm build --filter=./packages/*
+```
+
+### 4. Ten una convención para los nombres
+
+Usa un scope coherente: `@myui/button`, `@myui/input`…
+
+Además, mantén la estructura homogénea en cada paquete:
+
+```text
+[paquete]/
+  ├── src/
+  ├── tsconfig.json
+  ├── tsconfig.build.json
+  ├── .swcrc
+  └── README.md
+```
+
+### 5. Añade un README.md en cada paquete
+
+Explica lo siguiente:
+
+- Qué hace
+- Cómo se usa
+- Props principales
+- Ejemplos
+- Dependencias
+
+<InternalLink href="/libreria-de-componentes-en-monorepo">Volver a la lista de capítulos</InternalLink>

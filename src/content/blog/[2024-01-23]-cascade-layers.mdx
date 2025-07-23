@@ -1,0 +1,112 @@
+---
+title: "Cascade Layers: la cura para tu adicción al !important"
+slug: "cascade-layers"
+description: "Cómo volver a dormir tranquilo sin combatir a tus propias hojas de estilo"
+categories: ["Desarrollo"]
+tags: "css,development,frontend,layer,cascade"
+pubDate: "2024-01-23"
+---
+
+import CanIUse from "@/components/CanIUse.astro";
+import HorizontalScroll from "@/components/HorizontalScroll.astro";
+import ExternalLink from "@/components/ExternalLink.astro";
+
+**El problema**: cuando el `!important` se vuelve tu muleta.
+
+Quién no ha caído alguna vez: deadline encima, selector imposible de vencer y… zas, `color: red !important;`.
+
+El alivio es inmediato, pero el precio oculto también: cada nuevo `!important` obliga a la siguiente persona (a veces tú mismo dentro de tres meses... o 12 horas) a subir otro peldaño en la escalera de la especificidad. El resultado es un CSS frágil, difícil de mantener y cuyo orden ya nadie comprende.
+
+La buena noticia es que la especificidad se puede orquestar en lugar de pelear. Ahí entran las **Cascade Layers**.
+
+## ¿Qué son las Cascade Layers?
+
+Las Cascade Layers (`@layer`) forman parte de la especificación <i lang="en">CSS Cascading & Inheritance Level 5</i> y están soportadas por todos los navegadores modernos desde el 2022 (adiós IE).
+
+Piensa en ellas como "capas de prioridad" dentro del cascade: <mark>asignas reglas a una capa y decides el orden de las capas</mark>; a partir de ahí, las reglas dentro de la capa se siguen peleando entre sí con la especificidad normal, pero ninguna capa de menor prioridad podrá sobrepasar a otra de mayor, ni siquiera usando `!important`, lo que elimina la necesidad de ese flag para la mayoría de los casos.
+
+## ¿Por qué reemplazan a `!important`?
+
+<HorizontalScroll>
+| `!important` | `@layer` |
+|:------------- |:-------- |
+| Anula todo sin piedad, incluidos futuros estilos. | Prioriza grupos completos sin romper la cascada interna. |
+| Crece sin control ("escalada de guerra"). | Fomenta una jerarquía declarativa y predecible. |
+| Complica la depuración: nunca sabes por qué ganó. | El orden de las capas se lee de un vistazo. |
+| Difícil de revertir. | Puedes reordenar, anidar o usar revert-layer para volver al estado limpio. |
+</HorizontalScroll>
+
+### Ejemplo de sintaxis mínima
+
+```css
+/* Declaramos la jerarquía */
+@layer reset, globals, components, utilities;
+
+/* Cada bloque se escribe donde convenga */
+@layer reset {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+  }
+}
+
+@layer globals {
+  body {
+    font-family: system-ui, sans-serif;
+    line-height: 1.5;
+  }
+}
+
+@layer components {
+  .card {
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+}
+
+@layer utilities {
+  .text-center {
+    text-align: center;
+  }
+}
+
+/* Un override puntual sin recurrir a !important */
+@layer utilities {
+  .text-center {
+    display: grid;
+    place-items: center;
+  }
+}
+```
+
+Dentro de cada capa siguen aplicando especificidad y orden de siempre; la magia está en que, en este ejemplo, el bloque `utilities` entero gana a `components`, etc.
+
+## Anidación y modularidad
+
+Las capas también permiten anidarse (`@layer theme.colors { ... }`) o importarse desde archivos externos, lo que permite agrupar estilos sin perder modularidad.
+
+Por ejemplo, para modularidad, si construimos una librería de componentes, podemos agruparlos en la capa de `components` y luego importarlos en el proyecto principal, incluso anidándolos dentro de la capa de `theme` del proyecto principal. De esta forma, podemos mantener la modularidad de la librería y a la vez tener un control total sobre los estilos de la aplicación.
+
+## Estrategias de organización
+
+Un esquema habitual que suelo seguir con regularidad en mis proyectos, es el siguiente:
+
+1. **reset** - normaliza estilos de base.
+2. **globals** - tipografías, layout genérico, etc.
+3. **components** - botones, cards, tabs, etc.
+4. **utilities** - helpers de margen, texto, grid, etc.
+5. **overrides** - ajustes rápidos, normalmente para proyectos más grandes (pero sin `!important`).
+
+Intento mantener entre 4 y 6 capas para no crear algo demasiado complejo. Una sexta capa que suelo añadir, aunque no en ese orden, es `theme`. Normalmente lo reservo para proyectos más complejos, para definir temas distintos dentro de un mismo proyecto. O también, para proyectos muy pequeños, ya que reemplaza a `components`, `utilities` y `overrides`, minimizando la complejidad.
+
+## Compatibilidad
+
+`@layer` es ampliamente compatible desde marzo 2022 y a día de hoy supera el 94 % de soporte global. La gran mayotía de los navegadores modernos lo interpretan sin prefijos.
+
+<CanIUse feature="css-cascade-layers" meta="eb67" />
+
+## Consejos rápidos
+
+- Define el orden arriba del todo y al inicio de tu proyecto, con una lista separada por comas; así puedes repartir el código sin miedo.
+- Evita duplicar nombres de capa; la segunda declaración se fusiona con la primera.
+- Cuando necesites "el gran botón rojo", usa <ExternalLink href="https://developer.mozilla.org/en-US/docs/Web/CSS/revert-layer" aria-label="Abrir la documentación de MDN sobre revert-layer en una nueva pestaña">`revert-layer`</ExternalLink> antes que `!important`.

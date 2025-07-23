@@ -1,0 +1,92 @@
+---
+import SocialLinks from "@/components/SocialLinks.astro";
+import HeaderLink from "./HeaderLink.astro";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
+const t = useTranslations(lang);
+---
+
+<header>
+  <nav class="container">
+    <a class="logo" href={translatePath("/")} aria-label={t("goToHomePage")}>italodr.</a>
+    <ul class="internal-links">
+      <li class="hide-small">
+        <HeaderLink href={translatePath("/")} aria-label={t("goToHomePage")}>
+          {t("home")}
+        </HeaderLink>
+      </li>
+      <li><HeaderLink href={translatePath("blog")}>{t("blog")}</HeaderLink></li>
+      <li>
+        <HeaderLink href={translatePath("about")}>{t("about")}</HeaderLink>
+      </li>
+    </ul>
+    <SocialLinks position="header" />
+  </nav>
+</header>
+
+<style>
+  header {
+    padding: 1rem 0 2rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+  }
+
+  nav,
+  .internal-links {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+
+    @media screen and (min-width: 36em) {
+      gap: 1.5rem;
+    }
+  }
+
+  nav {
+    color: var(--foreground);
+
+    a {
+      text-decoration: none;
+    }
+  }
+
+  .internal-links {
+    margin-left: auto;
+
+    a {
+      border-bottom: 2px solid transparent;
+      color: var(--foreground);
+      font-size: 1rem;
+      padding: 0.5em;
+
+      &.active {
+        border-bottom-color: var(--accent);
+        color: var(--accent);
+        text-decoration: none;
+      }
+    }
+  }
+
+  .logo {
+    color: var(--foreground);
+    font-size: clamp(1.8125rem, 1.8125rem + ((1vw - 0.390625rem) * 1.25), 3.0625rem);
+    font-weight: 100;
+
+    @media (prefers-color-scheme: light) {
+      font-weight: var(--font-weight-normal);
+    }
+  }
+
+  .hide-small {
+    display: none;
+
+    @media screen and (min-width: 27em) {
+      display: block;
+    }
+  }
+</style>

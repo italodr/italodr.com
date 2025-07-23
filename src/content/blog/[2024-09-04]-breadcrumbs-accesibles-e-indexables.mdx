@@ -1,0 +1,109 @@
+---
+title: "Breadcrumbs accesibles e indexables"
+slug: "breadcrumbs-accesibles-e-indexables"
+description: "Los breadcrumbs son una estructura de navegación que permite a los usuarios saber dónde están en la jerarquía de la página y cómo llegar a ella. Son una herramienta esencial para la accesibilidad, pero hay que tener en cuenta algunos detalles para que sean accesibles e indexables por los buscadores."
+categories: ["Accesibilidad", "Desarrollo", "SEO"]
+tags: "accesibilidad,html,breadcrumbs,seo,google"
+pubDate: "2024-09-04"
+updatedDate: "2025-02-09"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+
+Los <i lang="en">breadcrumbs</i> (migas de pan) ayudan a que las personas entiendan dónde están dentro de la jerarquía de un sitio y les ofrecen atajos para volver a niveles superiores. Además, cumplen con el criterio <ExternalLink href="https://www.w3.org/TR/WCAG20-TECHS/G65.html">WCAG 2.4.8 (Location)</ExternalLink>, que exige indicar la ubicación de la página actual dentro del conjunto de páginas.
+
+Pero no solo es útil para los usuarios o accesibilidad, sino también [impacta en el SEO](#el-impacto-de-los-breadcrumbs-en-seo).
+
+## Estructura recomendada
+
+```html
+<nav aria-label="Breadcrumb">
+  <ol class="breadcrumb">
+    <li><a href="/">Inicio</a></li>
+    <li><a href="/blog/">Blog</a></li>
+    <li>
+      <a aria-current="page" href="/blog/breadcrumbs-accesibles-e-indexables/">
+        Breadcrumbs accesibles
+      </a>
+    </li>
+  </ol>
+</nav>
+```
+
+La <ExternalLink href="https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/examples/breadcrumb/" lang="en">WAI-ARIA Authoring Practices Guide (APG)</ExternalLink> publica un ejemplo de referencia con estas claves:
+
+- Un contenedor `<nav>` con un título accesible `aria-label="Breadcrumb"` para exponer el rastro como región de navegación.
+- Una lista ordenada (`<ol>`) cuyos hijos `<li>` contienen los enlaces.
+- Los separadores visuales (p. ej. `/`, `>`) se añaden solo con CSS para evitar redundancia en lectores de pantalla.
+- El último enlace recibe `aria-current="page"` para indicar la página actual.
+
+## Buenas prácticas complementarias
+
+- **Posición consistente**: coloca los breadcrumbs siempre en la misma zona, justo encima del título o del contenido principal.
+- **Tamaño y contraste**: el texto debe superar los ratios AA para que sea legible al 200% de zoom.
+- **Soporte de teclado**: los enlaces deben ser alcanzables con <kbd>Tab</kbd>; si el documento actual es solo texto, no debe recibir foco, evitando detener la tabulación[^1].
+- **Separadores sólo visuales**: usa `::before` con `content:"/"` o semejante; así las tecnologías asistivas solo anunciarán los enlaces sin el separador.
+
+[^1]: Sobre si el elemento del documento actual debe de ser enlace o no, hay variaciones en las opiniones.
+
+### ¿Debe ser el elemento del documento actual un enlace o no? [^1]
+
+Según el apartado de procedimiento de la técnica <ExternalLink href="https://www.w3.org/WAI/WCAG21/Techniques/general/G65#procedure">G65</ExternalLink> no indica determinantemente cómo representar el último elemento de la lista. Mas bien, lo deja abierto a la interpretación de la persona que lo implemente.
+
+Pero, añade un matiz muy importante, en el punto 6 de los procedimientos, en el caso de añadir un enlace al elemento del documento actual:
+
+> Para una ruta de navegación que incluya la ubicación actual y se comporte como un enlace:
+> 1. Verifique que todos los elementos estén implementados como enlaces.
+> 2. Verifique que la ubicación actual se identifique programáticamente como tal (por ejemplo, mediante el atributo `aria-current="page"`).
+
+## El impacto de los breadcrumbs en SEO
+
+Los breadcrumbs ofrecen un contexto semántico que ayuda a los buscadores a entender la estructura del sitio y clasificar mejor las páginas profundas, lo que facilita que aparezcan en consultas long-tail. Cada miga crea un enlace ascendente que distribuye `PageRank` y ayuda al rastreo, reduciendo el riesgo de "contenido huérfano". **No bloquees estos enlaces con `nofollow`**; usa rutas absolutas para evitar ambigüedades.
+
+Además, Google usa los datos estructurados `BreadcrumbList` para mostrar la ruta jerárquica directamente en el snippet de resultados, lo que mejora el CTR (Click Through Rate).
+
+Desde enero de 2025 Google ha dejado de mostrar la cadena breadcrumb en los snippets móviles y muestra solo el dominio; sin embargo sigue leyendo los datos estructurados `BreadcrumbList` para comprender la jerarquía y decidir qué páginas enlazar en otros componentes de búsqueda. Podéis leer más sobre esto en el artículo <ExternalLink href="https://www.theverge.com/2025/1/23/24350305/google-mobile-search-result-url-breadcrumb-seo" lang="en">Google's mobile search results are dropping the "breadcrumbs" from URLs</ExternalLink>.
+
+### ¿Cómo implementar los datos estructurados?
+
+```json
+<script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"BreadcrumbList",
+    "@id":"https://italodr/#breadcrumbs",
+    "itemListElement":[
+      {
+        "@type":"ListItem",
+        "position":1,
+        "name":"Inicio",
+        "item":"https://italodr.com"
+      },
+      {
+        "@type":"ListItem",
+        "position":2,
+        "name":"Blog",
+        "item":"https://italodr.com/blog"
+      },
+      {
+        "@type":"ListItem",
+        "position":3,
+        "name":"Breadcrumbs accesibles e indexables"
+      }
+    ]
+  }
+</script>
+```
+
+### Recomendaciones prácticas
+
+1. Añade **datos estructurados** incluso si visualmente decides ocultar el breadcrumb en móvil —Google aún lo necesita para comprender la arquitectura.
+2. **Mantén coherencia** URL ↔ breadcrumb; evita rutas "cosméticas" que no coincidan con la verdadera profundidad del directorio.
+3. Usa texto plano para la página actual si priorizas UX, pero no elimines el `ListItem` del JSON-LD: simplemente omite el campo `item` y deja `name` y `position`.
+4. Audita con Search Console → Enhancements → Breadcrumbs para verificar que no existan errores de datos estructurados.
+
+## Referencias
+
+- <ExternalLink href="https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/examples/breadcrumb/" lang="en">WAI-ARIA Authoring Practices Guide (APG)</ExternalLink>
+- <ExternalLink href="https://developers.google.com/search/docs/appearance/structured-data/breadcrumb" lang="en">Breadcrumb (BreadcrumbList) structured data</ExternalLink>
+- <ExternalLink href="https://www.w3.org/WAI/WCAG21/Techniques/general/G65" lang="en">Providing a breadcrumb trail</ExternalLink>

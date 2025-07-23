@@ -1,0 +1,107 @@
+---
+title: "Lean UX para side-projects"
+slug: "lean-ux-para-side-projects"
+description: "Fail fast sin perder el finde"
+categories: ["Productividad", "UX", "Agile"]
+tags: "lean,ux,side-project,productividad,agile"
+pubDate: "2024-10-24"
+---
+
+import HorizontalScroll from "@/components/HorizontalScroll.astro";
+import ExternalLink from "@/components/ExternalLink.astro";
+
+Hace poco, volví a <ExternalLink href="https://runroom.com/">Runroom</ExternalLink> a realizar el <ExternalLink href="https://info.runroom.com/certificado-en-lean-product-discovery">Curso de Lean Product Discovery</ExternalLink>, y pensé, ¿cómo se puede aplicar esto a esos side-projects que nos vienen a la cabeza, pero no tenemos tiempo para desarrollar?
+
+**Disclaimer**: este post no pretende ser una guía de <i lang="en">Lean UX</i>, sino una reflexión sobre cómo aplicar sus principios a side-projects. Para eso, recomiendo leer el libro de <ExternalLink href="https://www.amazon.es/s?k=lean+ux&__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=1IZC04DQOW18O&sprefix=lean+ux%2Caps%2C302&ref=nb_sb_noss_1" aria-label="Listado de libros de Lean UX en Amazon, abre en una nueva pestaña" lang="en">_Lean UX_</ExternalLink> de Jeff Gothelf y Josh Seiden (que no he leído, pero que parece ser una buena guía... alerta de sarcasmo).
+
+## ¿Por qué <i lang="en">Lean UX</i> es tu mejor amigo cuando sólo tienes el fin de semana?
+
+Un side-project casi siempre vive en los ratos libres: viernes por la noche, alguna hora suelta del sábado, y quizá la mañana del domingo, todo esto, por supuesto, cuando no tienes hijos; _spoiler_, después la cosa cambia, y mucho. <i lang="en">Lean UX</i> parte de la premisa de que <mark>el resultado útil es aprender, no entregar artefactos</mark>; por eso encaja perfecto con tu agenda ajustada. En lugar de pasarte semanas puliendo detalles, diseñas el experimento más pequeño capaz de validar (o reventar) tu hipótesis de valor.
+
+## La micro-ruta de tres días
+
+Planteemos un ejemplo de esas ideas que te vienen a la cabeza en el fin de semana. Imaginemos que somos personas organizadas y podemos realizar un planteamiento digno de Marie Kondo.
+
+<HorizontalScroll>
+| Momento | Objetivo | Entregable máximo |
+|:---------|:----------|:-------------------|
+| Viernes 19:00-22:00 | Aterrizar el problema y formular hipótesis | 1 párrafo: "Creemos que _X_[^1] mejorará _Y_ para _Z_ porque…" |
+| Sábado 09:00-14:00 | Construir la base del prototipo | Wireframes en papel o Figma, encuesta rápida, landing con formulario |
+| Sábado tarde-noche | Poner el test delante de usuarios reales | 5 entrevistas ligeras o 30 clicks a la landing |
+| Domingo 11:00-13:00 | Extraer aprendizajes y decidir | Matriz: "Continuar / Pivotar / Descartar" |
+</HorizontalScroll>
+
+(Ajusta las horas a tu vida; lo importante es cerrar cada bloque antes de que se coma el siguiente).
+
+[^1]: No confundamos _X_ con Twitter.
+
+## Cómo exprimir cada bloque sin quemarte
+<ol>
+  <li>
+    **Hipótesis laser**
+    <ul>
+      <li>Plantilla express: "Si ofrecemos [solución] a [tipo de usuario], entonces [métrica] mejorará".</li>
+      <li>Limita la métrica a algo medible en un par de días (ej. ratio de clicks, emails capturados).</li>
+    </ul>
+  </li>
+  <li>
+    **Prototipado minimal**
+    <ul>
+      <li>Usa baja fidelidad: papel, Miro, Figma community.</li>
+      <li>Recorta funcionalidades, sólo las pantallas necesarias para contar la historia.</li>
+    </ul>
+  </li>
+  <li>
+    **Test a velocidad crucero**
+    <ul>
+      <li>Recluta en comunidades que ya frecuentas (Slack, Discord, Telegram...).</li>
+      <li>Entrevistas de 10 minutos: presentación de 1 min, tareas cortas, preguntas abiertas.</li>
+      <li>Para landing/tests A/B usa herramientas instantáneas (<ExternalLink href="https://carrd.co/">Carrd</ExternalLink>[^2], <ExternalLink href="https://www.typeform.com/">Typeform</ExternalLink>, <ExternalLink href="https://forms.google.com/">Google Forms</ExternalLink>).</li>
+    </ul>
+  </li>
+  <li>
+    **Decisiones sin piedad**
+    <ul>
+      <li>¿Aprendiste algo accionable? Si la respuesta es "meh", pivota o descarta.</li>
+      <li>Documenta el aprendizaje en 3 bullets; evita "guardarlo por si acaso".</li>
+    </ul>
+  </li>
+</ol>
+
+[^2]: Carrd es una herramienta gratuita para crear landing pages. La conocí buscando información para este post. No la había utilizado antes, pero parece que es una buena opción para prototipos rápidos.
+
+## Trucos para no perder el finde (ni la motivación)
+
+- **Pomodoro** (normalmente 25 min): avanza con foco y descansa antes de quemarte.
+- **Checklist** "listo es mejor que perfecto": cuando el prototipo cumple la hipótesis, detente.
+- **Automatiza** lo aburrido: busca la manera de recopilar feedback.
+- **Limita** canales: un solo espacio de notas (Notion) y un hilo de chat por proyecto.
+- **Ritual de cierre** domingo tarde: plan de acción de la semana y ¡chocolatito de recompensa! (de 85% para arriba, que el sino el azúcar...)
+
+## Ejemplo real (mini-caso)
+
+Ana[^3] quiere validar una app que recomienda rutas de running nocturno seguras:
+
+Paso | Acción | Tiempo invertido
+|:-----|:-------|:----------------|
+| Hipótesis | "Si muestro rutas iluminadas a runners urbanas, aumentará su intención de salir de noche" | 45 min |
+| Prototipo | Mapa interactivo en Google My Maps + formulario de feedback | 3 h |
+| Test | Comparte en dos grupos de Telegram, obtiene 40 respuestas | 2 h |
+| Aprendizaje | 72 % valora "iluminación" pero piden estimación de tráfico | 1 h |
+| Decisión | Pivota: incorporar datos de densidad de coches con open data | — |
+
+Total fin de semana: ~7 h efectivas, sin madrugar el domingo. Por supuesto, es solo un ejemplo, y considera que tenemos buenas amistades que nos contestan rápido a todos los mensajes, especialmente en Telegram y a encuestas.
+
+[^3]: La persona es real, y la preocución también. Pero me sirvió para formularle una idea a ChatGPT y que me hiciera una tabla con estos pasos. Lo dicho, hay que optimizar el tiempo del finde.
+
+## Checklist para tu próximo finde lean
+
+- Redactar hipótesis en menos de 200 caracteres.
+- Diseñar prototipo que puedo enseñar en < 4 clics.
+- Tener mínimo 5 usuarios a los que pedir feedback inmediato.
+- Definir la métrica que decidirá seguir / pivotar / descartar.
+- Bloquear horario de descanso (sí, esto también va en la agenda).
+
+---
+
+Por supuesto, esto no solo es aplicable a side-projects, sino a cualquier proyecto que quieras iniciar o mejorar. Practicar <i lang="en">Lean UX</i> en modo _weekend-warrior_ significa <mark>aprovechar nuestro tiempo e impulsar nuestra curiosidad ilimitada</mark>. Con un proceso ligero, criterios claros y la valentía de descartar lo que no funciona, tu proyecto evoluciona o lo descartas en días, no en meses, y tú llegas al lunes con energía.

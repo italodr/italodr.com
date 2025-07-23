@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+type Props = HTMLAttributes<"a">;
+
+const { href, class: className, "aria-label": ariaLabel, ...props } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<a
+  href={href}
+  class:list={[className]}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-describedby="opensInNewTab"
+  {...props}
+  ><slot /><span id="opensInNewTab" class="visually-hidden">, {t("opensInNewTab")}</span></a
+>

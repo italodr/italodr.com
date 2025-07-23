@@ -1,0 +1,120 @@
+---
+import DefaultLayout from "@/layouts/Default.astro";
+import { getCollection } from "astro:content";
+import FormattedDate from "@/components/FormattedDate.astro";
+import Hero from "@/components/Hero.astro";
+import Badge from "@/components/Badge.astro";
+import ArrowUpRight from "@/components/ArrowUpRight.astro";
+
+const posts = (await getCollection("blog"))
+  .filter((post) => post.data?.draft !== true)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<DefaultLayout title="Blog">
+  <Hero>
+    <h1 class="title"><Badge class="hero-badge">Blog</Badge></h1>
+    <p>o más conocido como <i>"Mejor lo escribo antes de que se me olvide"</i>.</p>
+    <p class="h2 display">
+      Ideas, experimentos y explosiones neuronales sin filtro. <b
+        >No prometo orden ni conclusiones</b
+      >, pero al menos están por escrito.
+    </p>
+    <p>
+      Escribo en castellano, que en inglés ya hay mucho. Si te gusta el contenido, y quieres verlo
+      en inglés, dale a la campanita <svg
+        class="translate"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 256 256"
+        aria-label="Es un broma, no hay traducción, pero muestro el icono de Google Translate"
+        ><path fill="none" d="M0 0h256v256H0z"></path><path
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="12"
+          d="m232 216-56-112-56 112M136 184h80M88 32v24M24 56h128M120 56a96 96 0 0 1-96 96"
+        ></path><path
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="12"
+          d="M61.5 88a95.9 95.9 0 0 0 90.5 64"></path></svg
+      >.
+    </p>
+  </Hero>
+  <section class="container container--small">
+    <ul class="article-list">
+      {
+        posts.map((post) => (
+          <li class="article-list-item">
+            <a class="article" href={`/${post.data.slug}/`}>
+              <Badge class="date">
+                <FormattedDate date={post.data.pubDate} />
+              </Badge>
+              <p class="h5 article-title">
+                {post.data.title} <ArrowUpRight class="arrow" />
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</DefaultLayout>
+
+<style>
+  .title {
+    margin-bottom: 0;
+  }
+
+  .translate {
+    background-color: var(--surface);
+    border: var(--border);
+    border-color: currentColor;
+    border-radius: 0.25em;
+    display: inline-block;
+    height: 1.25em;
+    vertical-align: middle;
+    width: 1.25em;
+  }
+
+  .article-list-item {
+    margin-bottom: 1.5rem;
+
+    .date {
+      white-space: nowrap;
+    }
+
+    .article {
+      color: var(--foreground-dimmed);
+      text-decoration: none;
+
+      @media screen and (min-width: 48em) {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 1.5rem;
+        place-items: start;
+
+        .date {
+          margin-top: 0.15rem;
+          text-align: right;
+          width: 100%;
+        }
+      }
+
+      @media screen and (min-width: 60em) {
+        grid-template-columns: 1fr 4fr;
+      }
+    }
+  }
+
+  .article-title {
+    font-weight: var(--font-weight-light);
+  }
+
+  .arrow {
+    margin-left: 0.5rem;
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"li">;
+
+const { class: className, ...props } = Astro.props;
+---
+
+<li class:list={[className]} {...props}>
+  <span><slot /></span>
+</li>
+
+<style>
+  li {
+    align-items: flex-start;
+    counter-increment: item;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    p {
+      margin-bottom: 0;
+    }
+
+    &:before {
+      align-items: center;
+      border-radius: 50%;
+      border: var(--border);
+      color: var(--foreground);
+      content: counter(item);
+      display: flex;
+      font-size: 1rem;
+      font-weight: 100;
+      height: 2rem;
+      justify-content: center;
+      margin-top: 2.25rem;
+      min-width: 2rem;
+      width: 2rem;
+    }
+  }
+</style>

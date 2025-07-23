@@ -1,0 +1,145 @@
+---
+title: "Capítulo 1: Introducción y estructura del monorepo"
+slug: "libreria-de-componentes-en-monorepo/introduccion-y-estructura-del-monorepo"
+description: "Crear una librería de componentes UI no debería ser sinónimo de caos en múltiples repos, builds duplicadas o versiones desincronizadas. En este primer capítulo te mostraré cómo estructurar un monorepo robusto y escalable para construir, documentar, testear y publicar tus componentes con tecnologías como React, TypeScript, pnpm, SWC y Turborepo."
+categories: ["Desarrollo"]
+tags: "react,components,monorepo,storybook,ui"
+pubDate: "2025-04-03"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+import InternalLink from "@/components/InternalLink.astro";
+
+<ExternalLink href="https://github.com/italodr/demo-component-library/commit/005329b777408467675ce3a936fc9c08318a5958">Enlace al commit en Github de este capítulo</ExternalLink>
+
+## ¿Por qué un monorepo?
+
+Al usar un monorepo:
+
+- Centralizas la configuración y mantenimiento.
+- Compartes código entre paquetes fácilmente.
+- Puedes crear documentación y tests comunes.
+- Tienes un único punto de entrada para build y CI/CD.
+
+En este caso, construiremos una librería que podrá:
+
+- Usarse por paquetes independientes.
+- Mantener documentación viva con Storybook.
+- Publicarse automáticamente en npm mediante GitHub Actions y Changesets.
+
+## Estructura base del proyecto
+
+Creamos una estructura clara con dos workspaces: `packages/` para los componentes y `docs/` para la documentación:
+
+```text
+📁 myui/                  # Nombre del proyecto
+├── packages/
+│   └── button/           # Primer componente
+│   └── input/            # Otro componente
+├── docs/                 # Documentación o Storybook
+├── .github/              # Workflows de GitHub Actions
+├── node_modules/         # Administrado por pnpm
+├── package.json          # Scripts y dependencias globales
+├── pnpm-workspace.yaml   # Workspaces declarados
+├── turbo.json            # Configuración de Turborepo
+└── tsconfig.base.json    # Configuración base de TypeScript
+```
+
+## Tecnologías que usaremos
+
+| Herramienta | Propósito |
+| :----------- | :--------- |
+| pnpm | Gestor de paquetes y workspaces |
+| Turborepo | Ejecución de scripts y caching inteligente de monorepo |
+| React | Base para los componentes |
+| TypeScript | Tipado y DX mejorado |
+| SWC | Compilador moderno para builds rápidas |
+| Jest / Vitest | Testing accesible, rápido y confiable |
+| Testing Library | Testing orientado al usuario final |
+| Storybook | Documentación y desarrollo aislado de componentes |
+| Changesets | Versionado semántico multi-paquete |
+| Syncpack | Sincronización de dependencias en todo el monorepo |
+| GitHub Actions | Automatización de testing y despliegues |
+
+## Inicialización rápida del proyecto
+
+Para empezar, creamos el repositorio y lo inicializamos con `pnpm`, `turborepo` y `git`.
+
+```bash
+mkdir myui && cd myui
+pnpm init
+pnpm add -D turbo
+git init
+```
+
+Creamos el archivo `pnpm-workspace.yaml` para declarar nuestros workspaces:
+
+```yaml
+packages:
+  - "packages/*"
+  - "docs"
+```
+
+Creamos la configuración de Turborepo en `turbo.json`:
+
+```json
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "cache": false
+    },
+    "lint": {},
+    "test": {}
+  }
+}
+```
+
+Creamos nuestro archivo `.gitignore` para ignorar `node_modules`:
+
+```text
+node_modules
+```
+
+## Scripts útiles y organización
+
+Modificamos nuestro `package.json` para añadir scripts útiles y organización.
+
+```json
+{
+  "name": "myui",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.4.1",
+  "devDependencies": {
+    "@swc/cli": "0.7.8",
+    "@swc/core": "1.12.14",
+    "turbo": "^2.5.5"
+  }
+}
+```
+
+## Próximo capítulo
+
+En el Capítulo 2 veremos cómo:
+
+- Configurar correctamente `tsconfig` y `swcrc`.
+- Crear tu primer paquete de componentes.
+- Usar SWC para transpilar código de forma eficiente.
+- Preparar la salida para distribución.
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/configuracion-base-del-proyecto">Ir al siguiente capítulo</InternalLink><br /><br />
+<InternalLink href="/libreria-de-componentes-en-monorepo">Volver a la lista de capítulos</InternalLink>

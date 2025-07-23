@@ -1,0 +1,101 @@
+@layer global {
+  :root {
+    --background: #141414;
+    --surface: #2d2d2d;
+    --foreground: #f1f1f1;
+    --foreground-dimmed: #c5c5c5;
+    --highlight: #a4a212;
+    --highlight-foreground: #141414;
+    --accent: #ff5d37;
+    --accent-hover: #ff7e5b;
+    --success: #2ecd71;
+    --border: 1px solid #2d2d2d;
+
+    --font-weight-light: 100;
+    --font-weight-normal: 200;
+    --font-weight-bold: 500;
+
+    @media (prefers-color-scheme: light) {
+      --background: #f9fafb;
+      --surface: #f1f1f1;
+      --foreground: #111827;
+      --foreground-dimmed: #383c43;
+      --highlight: #a4a212;
+      --highlight-foreground: #111827;
+      --accent: #ce3e1d;
+      --accent-hover: #af3317;
+      --success: #24a148;
+      --border: 1px solid #aca7a7;
+    }
+  }
+
+  @font-face {
+    font-family: 'Poppins';
+    src: url('/fonts/Poppins-Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Poppins';
+    src: url('/fonts/Poppins-ExtraLight.woff2') format('woff2');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Poppins';
+    src: url('/fonts/Poppins-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  strong,
+  b {
+    color: var(--foreground);
+    font-weight: var(--font-weight-bold);
+  }
+
+  i, em {
+    font-style: italic;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: underline;
+
+    &:hover,
+    &:focus,
+    &:active {
+      color: var(--accent-hover);
+    }
+  }
+
+  p {
+    margin-bottom: 1em;
+  }
+
+  ol {
+    counter-reset: item;
+  }
+
+  mark {
+    background-color: var(--highlight);
+    color: var(--highlight-foreground);
+    padding: 0 0.2em;
+  }
+
+  .sr-only,
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+}

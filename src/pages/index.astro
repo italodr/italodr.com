@@ -1,0 +1,145 @@
+---
+import DefaultLayout from "@/layouts/Default.astro";
+import Brands from "@/components/Brands.astro";
+import Hero from "@/components/Hero.astro";
+import Columns from "@/components/Columns.astro";
+import ListItem from "@/components/ListItem.astro";
+import Badge from "@/components/Badge.astro";
+import InternalLink from "@/components/InternalLink.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "es" } }, { params: { lang: "en" } }];
+}
+
+const { lang } = Astro.params;
+---
+
+<DefaultLayout>
+  <Hero>
+    <h1>Optimizo y automatizo <b>productos digitales accesibles</b> y de alto rendimiento</h1>
+    <p>
+      Más de 10 años liderando estrategias tecnológicas y creando soluciones digitales escalables
+      que automatizan procesos y elevan la rentabilidad de organizaciones internacionales.
+    </p>
+  </Hero>
+  <section class="container">
+    <h2><Badge>Sobre mí</Badge></h2>
+    <p class="h2 display">
+      Soy Italo Devoto Ramella, <b>ingeniero full-stack</b> y líder tecnológico con <b
+        >visión estratégica</b
+      >, ubicado en Barcelona, España.
+    </p>
+    <p class="mb-8">
+      Combino negocio, datos y tecnología para guiar equipos multidisciplinares y entregar productos
+      accesibles, rápidos y listos para crecer. Lidero y desarrollo diversos tipos de productos
+      digitales, desde sitios web hasta automatizaciones de herramientas internas, realizando
+      análisis de datos, auditorías e implementaciones de accesibilidad para que tus plataformas
+      escalen con rapidez, fiabilidad y alcance universal.
+    </p>
+    <InternalLink href="/sobre-mi">¿Quieres saber más sobre mí?</InternalLink>
+  </section>
+  <Columns class="container">
+    <div slot="left">
+      <h3>Lo que me diferencia</h3>
+    </div>
+    <div slot="right">
+      <ol>
+        <ListItem>
+          <Badge>Transformación</Badge>
+          <p class="h4 display"><b>Transformación digital</b> y automatización</p>
+          basada en IA para optimizar plataformas.
+        </ListItem>
+        <ListItem>
+          <Badge>Liderazgo</Badge>
+          <p class="h4 display">Definición de <b>roadmaps y liderazgo técnico</b></p>
+          en empresas internacionales.
+        </ListItem>
+        <ListItem>
+          <Badge>Producto</Badge>
+          <p class="h4 display">Creación de <b>productos multi-cliente</b></p>
+          e integraciones a medida con paneles interactivos de datos.
+        </ListItem>
+      </ol>
+    </div>
+  </Columns>
+  <Columns class="container">
+    <div slot="left">
+      <h3>¿Cómo puedo ayudar a hacer crecer tu empresa?</h3>
+    </div>
+    <div slot="right">
+      <ol>
+        <ListItem>
+          <Badge>Estrategia</Badge>
+          <p class="h4 display">Desarrollo y <b>estrategia</b> full-stack end-to-end</p>
+        </ListItem>
+        <ListItem>
+          <Badge>Automatización</Badge>
+          <p class="h4 display">Integración de <b>Machine Learning/IA</b></p>
+          y automatización de procesos
+        </ListItem>
+        <ListItem>
+          <Badge>Performance y accesibilidad</Badge>
+          <p class="h4 display">Optimización de rendimiento web y <b>accesibilidad</b></p>
+          para experiencias inclusivas y veloces
+        </ListItem>
+        <ListItem>
+          <Badge>Liderazgo</Badge>
+          <p class="h4 display">Mentoring y <b>liderazgo de equipos ágiles</b></p>
+          con enfoque en calidad y pruebas
+        </ListItem>
+      </ol>
+    </div>
+  </Columns>
+  <Columns class="container">
+    <div slot="left">
+      <h3>Principales tecnologías y frameworks con los que trabajo</h3>
+    </div>
+    <p slot="right">
+      JavaScript / TypeScript, Node.js, React, Astro, Next.js, PayloadCMS, GraphQL, Python, SQL,
+      MongoDB, Git, HTML, CSS, BigQuery, Looker Studio…
+    </p>
+  </Columns>
+  <Columns class="container">
+    <div slot="left">
+      <h3>Formación y certificaciones</h3>
+    </div>
+    <div slot="right">
+      <ol>
+        <ListItem>
+          <Badge>ESADE</Badge>
+          <p class="h4 display">Executive Master in <b>Business Analytics</b></p>
+        </ListItem>
+        <ListItem>
+          <Badge>ESADE</Badge>
+          <p class="h4 display">Programa Executive en <b>Digital Twins</b></p>
+        </ListItem>
+        <ListItem>
+          <Badge>Google</Badge>
+          <p class="h4 display">Certificación en <b>Google Analytics</b></p>
+        </ListItem>
+        <ListItem>
+          <Badge>Runroom</Badge>
+          <p class="h4 display">Curso <b>Product Discovery</b> con Lean UX</p>
+        </ListItem>
+        <ListItem>
+          <Badge>Deque University</Badge>
+          <p class="h4 display">Curso de <b>Accesibilidad Web</b></p>
+        </ListItem>
+        <ListItem>
+          <Badge>Netmind</Badge>
+          <p class="h4 display">Programa <b>Train the Trainer</b></p>
+        </ListItem>
+      </ol>
+    </div>
+  </Columns>
+  <section class="container">
+    <h2>Principales empresas con las que he colaborado</h2>
+    <Brands />
+  </section>
+</DefaultLayout>
+
+<style>
+  .mb-8 {
+    margin-bottom: 4rem;
+  }
+</style>

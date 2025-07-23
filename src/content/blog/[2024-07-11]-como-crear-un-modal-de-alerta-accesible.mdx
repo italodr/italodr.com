@@ -1,0 +1,176 @@
+---
+title: "Cómo crear un modal de alerta accesible"
+slug: "como-crear-un-modal-de-alerta-accesible"
+description: "Un alert dialog es un cuadro de diálogo modal que interrumpe el flujo de trabajo del usuario para comunicarle un mensaje importante que requiere una respuesta inmediata."
+categories: ["Accesibilidad", "Desarrollo"]
+tags: "accesibilidad,modal,alert,alertdialog,dialog,html,css"
+pubDate: "2024-07-11"
+updatedDate: "2025-01-05"
+---
+
+import AlertDialog from "@/content/snippets/AlertDialog";
+import HorizontalScroll from "@/components/HorizontalScroll.astro";
+import ExternalLink from "@/components/ExternalLink.astro";
+import CanIUse from "@/components/CanIUse.astro";
+
+Un alert dialog es un cuadro de diálogo modal que interrumpe el flujo de trabajo del usuario para comunicarle un mensaje importante que requiere una respuesta inmediata (por ejemplo, confirmar una acción destructiva o avisar de un error grave). Al aplicar el rol `alertdialog`, las tecnologías asistivas y los navegadores pueden tratarlo de forma especial (p. ej., reproducir un sonido de sistema), diferenciándolo de otros diálogos convencionales.
+
+En el apartado de [Ejemplo de implementación](#ejemplo-de-implementación) podréis ver un ejemplo de implementación de un alert dialog en React.
+
+## Estructura semántica mínima
+
+- El contenedor nativo `<dialog>` aporta toda la sintaxis semántica que necesita un modal. En casos de necesidad, se puede extender la semántica utilizando `role="alertdialog"`. También podría utilizarse un `<div>`, pero requerirá más trabajo.
+- Deberá tener un título visible y referenciado con `aria-labelledby`, para proporcionarle un nombre accesible.
+- Deberá tener un texto del mensaje y referenciado con `aria-describedby`, para proporcionarle una descripción accesible.
+- Deberá tener botones de acción que permitan responder al mensaje.
+- El foco inicial se envía al botón menos destructivo.
+
+El diálogo debe tener un título y un mensaje legibles para satisfacer el SC[^1] 4.1.2 (Name, Role, Value).
+
+[^1]: En los documentos de las Pautas de Accesibilidad para el Contenido Web (WCAG), la abreviatura SC significa Success Criterion (criterio de éxito). Cada criterio describe un requisito verificable que el contenido debe cumplir para alcanzar un determinado nivel de conformidad (A, AA o AAA).
+
+## Comportamiento de teclado y gestión del foco
+
+<ol>
+  <li>
+    Al abrir el diálogo
+    <ul>
+      <li>Mueve el foco al primer control dentro del `<dialog>`.</li>
+      <li>Guarda la referencia del elemento que abrió el diálogo para restaurarlo al cerrar.</li>
+    </ul>
+  </li>
+  <li>
+    Ciclo de tabulación
+    <ul>
+      <li><kbd>Tab</kbd> y <kbd>Shift + Tab</kbd> recorren solo los controles del diálogo (focus trap).</li>
+      <li>Evita que el foco se "escape" accidentalmente (SC 2.1.2 No Keyboard Trap).</li>
+    </ul>
+  </li>
+  <li>
+    Salir con Esc
+    <ul>
+      <li>Permite cerrar el diálogo con la tecla <kbd>Esc</kbd> y devuelve el foco al elemento que abrió el diálogo.</li>
+    </ul>
+  </li>
+  <li>
+    Visibilidad y orden de foco
+    <ul>
+      <li>El foco debe seguir un orden lógico (SC 2.4.3 Focus Order) y ser visible (SC 2.4.7 Focus Visible; SC 2.4.11 Focus Not Obscured —nuevo en WCAG 2.2—).</li>
+    </ul>
+  </li>
+  <li>
+    Operable solo con teclado
+    <ul>
+      <li>Todas las acciones (aceptar, cancelar, cerrar) han de ser ejecutables mediante teclado (SC 2.1.1 Keyboard)</li>
+    </ul>
+  </li>
+</ol>
+
+### Criterios de éxito (SC) asociados al alert dialog
+
+<HorizontalScroll>
+| SC | Nombre | Cómo afecta a alertdialog | Nivel |
+| :--- | :--- | :--- | :--- |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html">2.1.1</ExternalLink> | Keyboard | Toda funcionalidad operable por teclado | A |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG21/Understanding/no-keyboard-trap.html">2.1.2</ExternalLink> | No Keyboard Trap[^2] | El foco no queda atrapado sin salida evidente | A |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html">2.4.3</ExternalLink> | Focus Order | Secuencia de foco lógica dentro y fuera del diálogo | A |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG21/Understanding/focus-visible.html">2.4.7</ExternalLink> | Focus Visible | Indicador de foco perceptible | AA |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html">2.4.11/12</ExternalLink> | Focus Not Obscured | El elemento con foco no queda oculto por el diálogo ni por el overlay | AA/AAA |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG21/Understanding/name-role-value.html">4.1.2</ExternalLink> | Name, Role, Value | role="alertdialog", aria-labelledby, aria-describedby | A |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html">4.1.3</ExternalLink> | Status Messages | Si el diálogo informa de estado (p. ej. confirmación rápida), usa role="alert" o alertdialog | AA |
+</HorizontalScroll>
+
+[^2]: La "trampa de teclado" que prohíbe la WCAG 2.1.2 se refiere a quedar atrapado sin salida: si entras en un componente y después no existe ninguna forma de salir solo con el teclado, o necesitas combinaciones no estándar y nadie te las indica. La propia página de <ExternalLink href="https://www.w3.org/WAI/WCAG22/Understanding/no-keyboard-trap.html" lang="en">No Keyboard Trap (Level A)</ExternalLink> pone como ejemplo válido un diálogo modal cuya tabulación se mantiene dentro de él mientras esté abierto; la clave es que el usuario puede abandonarlo con un botón Cancelar/OK o con la tecla <kbd>Esc</kbd>.
+
+## Buenas prácticas complementarias
+
+- Anunciar cambios breves (p. ej. "Notas guardadas") con `role="alert"` en lugar de `alertdialog` para no exigir interacción del usuario. No será necesario el `role="alert"` en caso de utilizar el elemento `<dialog>`.
+- Mantén la jerarquía de encabezados y el orden DOM para que la secuencia de lectura sea lógica (SC <ExternalLink href="https://www.w3.org/WAI/WCAG21/Understanding/meaningful-sequence.html">1.3.2 Meaningful Sequence</ExternalLink>).
+- Utiliza `role="document"` y `tabindex="0"` en el contenedor del diálogo para que los lectores de pantalla puedan identificarlo como el contenido principal del elemento.
+- Minimiza el uso de ARIA. Utiliza el elemento `<dialog>` y su atributo `open` de preferencia; añade `role="alertdialog"` solo cuando sea necesario.
+- Prueba con lectores de pantalla (NVDA, JAWS, VoiceOver) y navegadores móviles.
+
+## Lista de verificación rápida
+
+- El diálogo tiene título (`aria-labelledby` o `aria-label`).
+- Hay descripción (`aria-describedby`) que se lee automáticamente.
+- Se abre mediante un control accesible.
+- Foco inicial en la acción más segura; <i lang="en">focus trap</i>.
+- Se cierra con <kbd>Esc</kbd> y devuelve el foco al elemento activador.
+- Todos los botones son operables por teclado y muestran foco visible.
+- El diálogo y su foco nunca quedan ocultos detrás de otros elementos.
+
+## Ejemplo de implementación
+
+<AlertDialog client:only="react" />
+
+### El diálogo tiene título y descripción
+
+```tsx
+<dialog
+  role="alertdialog"
+  aria-labelledby="dialog-title"
+  aria-describedby="dialog-description"
+  ...
+  >
+  ...
+    <h2 id="dialog-title">...</h2>
+    <p id="dialog-description">...</p>
+  ...
+</dialog>
+```
+
+### Se abre mediante un control accesible
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+...
+<button onClick={() => setIsOpen(true)}>Open dialog</button>
+```
+
+### Foco inicial en la acción más segura; <i lang="en">focus trap</i>, se cierra con <kbd>Esc</kbd> y devuelve el foco al elemento activador.
+
+```tsx
+const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      setIsOpen(false);
+    }
+  };
+
+  const handleFocusTrap = (event) => {
+    if (!isOpen) return;
+
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const focusableElements = dialog.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstFocusable = focusableElements[0];
+    const lastFocusable = focusableElements[focusableElements.length - 1];
+
+    if (event.key === "Tab") {
+      if (event.shiftKey && document.activeElement === firstFocusable) {
+        event.preventDefault();
+        lastFocusable.focus();
+      } else if (!event.shiftKey && document.activeElement === lastFocusable) {
+        event.preventDefault();
+        firstFocusable.focus();
+      }
+    }
+  };
+
+  useEffect(() => {
+    ...
+    if (isOpen) {
+      ...
+    } else {
+      triggerRef.current?.focus();
+    }
+    ...
+  }, [isOpen]);
+```
+
+## Soporte del elemento `<dialog>` en navegadores
+
+<CanIUse feature="dialog" meta="e6da" />

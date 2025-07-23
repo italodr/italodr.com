@@ -1,0 +1,47 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"section">;
+
+const { class: className, ...props } = Astro.props;
+---
+
+<section class:list={["hero", className]} {...props}>
+  <div class="container">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .hero {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+    min-height: 40dvh;
+    padding-block: 8rem 6rem;
+    position: relative;
+
+    @media screen and (min-width: 48rem) {
+      min-height: 60dvh;
+    }
+
+    @media screen and (min-width: 64rem) {
+      min-height: 80dvh;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at top left,
+        var(--accent) 0%,
+        var(--background) 40%,
+        var(--background) 100%
+      );
+      min-height: 95dvh;
+      z-index: -1;
+    }
+  }
+</style>

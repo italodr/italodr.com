@@ -1,0 +1,41 @@
+---
+title: "Aquel olvidado <dl> que rescata la semántica… y la accesibilidad"
+slug: "aquel-olvidado-dl-que-rescata-la-semantica-y-la-accesibilidad"
+description: ""
+categories: ["Accesibilidad", "Desarrollo"]
+tags: "accesibilidad,html,dl"
+pubDate: "2024-07-11"
+updatedDate: "2025-01-05"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+import DefinitionList from "@/content/snippets/DefinitionList";
+
+Una <i lang="en">Description List</i> (`<dl>`) agrupa términos (`<dt>`) y descripciones (`<dd>`). La especificación aclara que puede haber uno o varios `<dt>` seguidos de uno o varios `<dd>` en cada grupo, lo que lo hace perfecto para metadatos, FAQs, tablas de especificaciones, etc.
+
+## ¿Por qué se ha olvidado `<dl>`?
+
+El boom de los frameworks y el abuso de los `<div>` casi lo borraron de la memoria colectiva. Sin embargo, **HTML 5 cambió su definición** y hoy lo podemos —o mas bien, debemos— usar para cualquier lista de pares nombre-valor, no sólo para glosarios.
+
+## ¿Cómo se usa `<dl>`?
+
+Un `<dl>` se usa como cualquier otro elemento de lista:
+
+```html
+<dl>
+  <dt>Procesador</dt><dd>Apple M3 Pro</dd>
+  <dt>Memoria</dt><dd>16 GB</dd>
+  <dt>Almacenamiento</dt><dd>1 TB SSD</dd>
+</dl>
+```
+
+## Por qué importa para la accesibilidad
+
+- **Relaciones explícitas**: el par `<dt>`/`<dd>` hace que la relación semántica sea programáticamente determinable, requisito de WCAG 2 (<ExternalLink href="https://www.w3.org/WAI/WCAG21/Techniques/html/H48">SC 1.3.1</ExternalLink>).
+- **Navegación más eficiente**: muchos lectores de pantalla permiten saltar lista a lista o ítem a ítem, lo que facilita omitir bloques completos si el usuario quiere.
+- **Anuncios contextuales**: VoiceOver, NVDA y otros anuncian el número total de parejas y el contexto ("lista de definiciones"), ayudando a entender la estructura antes de entrar en ella.
+- **Menos ARIA, más HTML**: al usar el elemento correcto evitamos roles ARIA innecesarios, reduciendo complejidad y posibles errores.
+
+## Ejemplo de uso y estilos
+
+<DefinitionList client:only="react" />

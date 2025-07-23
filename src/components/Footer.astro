@@ -1,0 +1,82 @@
+---
+import SocialLinks from "@/components/SocialLinks.astro";
+import { SITE_AUTHOR } from "@/consts";
+import {
+  getLangFromUrl,
+  getRouteKeyFromPath,
+  useTranslations,
+  translatePathToLang,
+} from "@/i18n/utils";
+
+const today = new Date();
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const currentPath = Astro.url.pathname;
+const currentRouteKey = getRouteKeyFromPath(currentPath);
+---
+
+<footer>
+  <ul class="languages" aria-label={t("changeLanguage")}>
+    <li>
+      <a
+        class={lang !== "en" ? "active" : ""}
+        href={translatePathToLang(currentRouteKey, "es")}
+        aria-label={lang !== "en"
+          ? `${t("selectedLanguage")}, ${t("spanish")}`
+          : `${t("changeLanguageTo")} ${t("spanish")}`}>Español</a
+      >
+    </li>
+    <li>
+      <a
+        class={lang === "en" ? "active" : ""}
+        href={translatePathToLang(currentRouteKey, "en")}
+        aria-label={lang === "en"
+          ? `${t("selectedLanguage")}, ${t("english")}`
+          : `${t("changeLanguageTo")} ${t("english")}`}>English</a
+      >
+    </li>
+  </ul>
+  <p>
+    &copy; {today.getFullYear()}
+    {SITE_AUTHOR}. {t("madeWithLove")}
+  </p>
+  <SocialLinks />
+</footer>
+
+<style>
+  footer {
+    padding: 10em 1em 6em 1em;
+    text-align: center;
+
+    p {
+      max-width: 100%;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+  }
+
+  .languages {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    a {
+      background-color: var(--surface);
+      color: var(--foreground-dimmed);
+      border-radius: 0.25em;
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.25em 0.75em;
+      text-decoration: none;
+
+      &.active {
+        background-color: var(--accent);
+        color: var(--foreground);
+      }
+    }
+  }
+</style>

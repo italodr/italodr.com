@@ -1,0 +1,26 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"mark">;
+
+const { class: className, ...props } = Astro.props;
+---
+
+<mark class:list={["badge", className]} {...props}>
+  <slot />
+</mark>
+
+<style>
+  .badge {
+    background: transparent;
+    color: var(--accent);
+    font-size: 1rem;
+    font-weight: var(--font-weight-normal);
+    margin-bottom: 0.125rem;
+    padding: 0;
+
+    &.hero-badge {
+      color: var(--foreground);
+    }
+  }
+</style>

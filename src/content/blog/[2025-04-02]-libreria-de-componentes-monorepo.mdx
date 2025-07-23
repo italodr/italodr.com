@@ -1,0 +1,73 @@
+---
+title: "Guía para crear una librería de componentes en monorepo"
+slug: "libreria-de-componentes-en-monorepo"
+description: "Guía práctica para crear y mantener una librería de componentes React utilizando una arquitectura monorepo, incluyendo configuración, desarrollo, testing, documentación y buenas prácticas"
+categories: ["Desarrollo"]
+tags: "react,components,monorepo,storybook,testing,ui"
+pubDate: "2025-04-02"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+import InternalLink from "@/components/InternalLink.astro";
+
+En esta guía crearemos una librería de componentes UI desde cero, utilizando una arquitectura monorepo. El código lo puedes encontrar en el <ExternalLink href="https://github.com/italodr/demo-component-library">repositorio demo de la guía</ExternalLink>. Cada commit está etiquetado con el número del capítulo correspondiente.
+
+## Capítulo 1: Introducción y estructura del monorepo
+
+- Qué es un monorepo y por qué usarlo para una UI library
+- Tecnologías elegidas y justificación
+- Estructura de carpetas: packages/, docs/, .github/, turbo.json, etc.
+- Configuración inicial de pnpm, turbo, syncpack, changeset
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/introduccion-y-estructura-del-monorepo">Ver capítulo 1 <span class="visually-hidden">Introducción y estructura del monorepo</span></InternalLink>
+
+## Capítulo 2: Configuración base del proyecto
+
+- package.json raíz y scripts globales (lint, build, format, etc.)
+- Configuración de pnpm-workspace.yaml
+- Configuración de turbo.json
+- Setup de syncpack para gestión de versiones
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/configuracion-base-del-proyecto">Ver capítulo 2 <span class="visually-hidden">Configuración base del proyecto</span></InternalLink>
+
+
+## Capítulo 3: Testing accesible con Jest, Testing Library y Vitest (opcional)
+
+- Añadiremos `jest` o `vitest` para pruebas unitarias.
+- Configuraremos `@testing-library/react`, `jest-axe` y `jsdom`.
+- Integraremos testing accesible desde el primer componente.
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/testing-accesible-con-jest-testing-library-vitest">Ver capítulo 3 <span class="visually-hidden">Testing accesible con Jest, Testing Library y Vitest (opcional)</span></InternalLink>
+
+## Capítulo 4: Documentación interactiva con Storybook
+
+- Visualizar tus componentes de forma aislada,
+- Documentar variantes y props,
+- Y eventualmente convertir docs/ en un sitio navegable.
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/documentacion-interactiva-con-storybook">Ver capítulo 4 <span class="visually-hidden">Documentación interactiva con Storybook</span></InternalLink>
+
+## Capítulo 5: Versionado semántico y publicación con Changesets
+
+- Instalación y configuración de @changesets/cli
+- Flujo de trabajo con changeset, version, publish
+- Cómo versionar múltiples paquetes y publicar con pnpm
+- Tagging y manejo de versiones internas vs públicas
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/versionado-semantico-y-publicacion-con-changeset">Ver capítulo 5 <span class="visually-hidden">Versionado semántico y publicación con Changesets</span></InternalLink>
+
+## Capítulo 6: Automatización con GitHub Actions — CI/CD para tu librería UI
+
+- Validaciones en pull requests
+- Build + tests en cada push
+- Publicación automática cuando se mergea a main
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/automatizacion-con-github-actions">Ver capítulo 6 <span class="visually-hidden">Automatización con GitHub Actions — CI/CD para tu librería UI</span></InternalLink>
+
+## Capítulo 7: Mantenimiento del monorepo con Syncpack y buenas prácticas
+
+- Sincronización de dependencias con syncpack
+- Limpieza de paquetes
+- Organización visual y semántica del sistema de componentes
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/mantenimiento-del-monorepo-con-syncpack-y-buenas-practicas">Ver capítulo 7 <span class="visually-hidden">Mantenimiento del monorepo con Syncpack y buenas prácticas</span></InternalLink>

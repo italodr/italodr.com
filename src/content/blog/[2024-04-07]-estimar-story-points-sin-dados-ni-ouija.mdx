@@ -1,0 +1,80 @@
+---
+title: "¿Cómo estimar story points sin dados ni ouija?"
+slug: "estimar-story-points-sin-dados-ni-ouija"
+description: "El objetivo real de una estimación ágil es lograr un consenso razonable basado en evidencia sobre el esfuerzo relativo de una historia"
+categories: ["Desarrollo", "Productividad", "Agile"]
+tags: "estimación,agile,planning poker"
+pubDate: "2024-04-07"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+
+Las sesiones de planning poker con tarjetas de Fibonacci, dados o incluso tableros de ouija pueden resultar divertidas, pero a veces confunden más de lo que aclaran. El objetivo real de una estimación ágil es lograr un consenso razonable basado en evidencia sobre el esfuerzo relativo de una historia, no crear un ritual místico. A continuación encontrarás un enfoque pragmático —el mío, sin utensilios esotéricos— para asignar story points con rigor y agilidad.
+
+## Parte de un ancla histórica
+
+1. Identifica una historia reciente que todo el equipo recuerde bien y cuyo esfuerzo esté validado por datos (horas de trabajo real o días de calendario).
+2. Declárala como tu "Historia de Referencia" y asígnale un valor fijo (por ejemplo, 5 puntos).
+3. Cuando llegue una nueva historia, pregunta: "¿Es mayor, menor o igual?" respecto de la referencia.
+
+- Mayor → más de 5 puntos
+- Igual → 5 puntos
+- Menor → menos de 5 puntos
+
+Este sencillo paso ancla las conversaciones en la experiencia y evita discusiones abstractas sobre "qué significa un punto".
+
+Cada vez que vayas a estimar, vuelve a localizar esa nueva y reciente historia de referencia y hazte las mismas preguntas.
+
+## Descompón antes de estimar
+
+- **Regla de oro**: si una tarea parece enorme o difícil de visualizar, divídela.
+- Crea subtareas lo bastante pequeñas como para caber en la cadencia de tus sprints.
+- Estimar piezas más pequeñas reduce la varianza y mejora la precisión global.
+
+## Usa rangos en lugar de números exactos
+
+En vez de debatir si algo vale 8 o 13 puntos, acuerda rangos (p. ej. 3-5, 5-8, 8-13).
+
+- Para planificar capacidad basta con la media del rango.
+- El rango visibiliza la incertidumbre: historias amplias generan rangos amplios, lo que invita a refinement.
+- Puedes dejar en stand-by algunas historias que no estén claras, y volver a estimarlas en la siguiente sesión, cuando tengas más contexto e historias de referencia.
+
+## Apóyate en datos de rendimiento pasado
+
+- Calcula el promedio de puntos completados por sprint (velocidad).
+- Revisa la dispersión: un coeficiente de variación alto indica que las estimaciones actuales son inconsistentes.
+- Un _rule of thumb_ es que, si trabajas con post-its, la visualización de las tareas estimadas en tu panel, debe parecerse a una campana de Gauss invertida.
+
+**Consejo exprés**: si tu velocidad media es 42 pts y el nuevo backlog suma 420 pts, ya sabes que, en promedio, tardarás unos 10 sprints. Ese marco numérico calma ansiedades antes de que empiece la discusión cualitativa.
+
+## Estimación silenciosa y votación simultánea
+
+Para evitar anclaje (la primera voz que habla influye a todas), prueba la dinámica "silent grouping":
+
+- Cada persona anota su estimación en una pizarra virtual, o usas dedos, como en piedra-papel-tijera.
+- Todas las respuestas se revelan al mismo tiempo.
+- Solo se discuten los extremos (la cifra más alta y la más baja).
+- Intenta dialogar y llegar a un consenso, las discusiones se basan en hechos, no en percepciones vagas. O, repite —normalmente basta con dos rondas— y acepta la moda o la media como consenso.
+
+## Reevalúa después de cada sprint
+
+- Durante la retrospectiva, compara esfuerzo estimado vs. real para 2 o 3 historias representativas.
+- Ajusta la escala si notas desvíos sistemáticos.
+- Esta retroalimentación continua es la forma más fiable de mejorar precisión sin cambiar la metodología.
+
+## ¿Por qué utilizar la escala de Fibonacci?
+
+- Refleja la **ley de rendimientos decrecientes**. Cada número es ~60% mayor que el anterior. A medida que las historias crecen, la incertidumbre crece de forma no lineal; la escala hace visible esa expansión de riesgo en vez de "engañarte" con tallas de camiseta, números consecutivos, o incluso peor, con horas.
+- **Fuerza a elegir, no a matizar**. El salto 5->8 no admite el "7 que queda bien". Esto evita la falsa precisión y acorta las discusiones: o es un poco más pequeña (5) o sensiblemente mayor (8).
+- **Facilita la división natural de historias** gracias a una propiedad matemática: la suma de dos números consecutivos de Fibonacci se aproxima al siguiente (3 + 5 ≈ 8). Por ello surge una regla práctica: si una historia estimada en 8 puntos puede descomponerse en partes de 3 y 5, conviene dividirla.
+- **Converge rápido al consensuar**. Equipos experimentados tienden a coincidir en 2-3 rondas porque los números están lo bastante espaciados para que las diferencias extremas salten a la vista y sean debatidas.
+- **Compatible con métricas simples**. La velocidad suele estabilizarse en múltiplos manejables (por ejemplo, 34-37 pts/sprint), lo que permite proyecciones tempranas sin cálculos finos.
+
+---
+
+Eliminar los "dados y ouijas" de tus estimaciones no elimina la colaboración ni la diversión; simplemente reemplaza la teatralidad por transparencia y evidencia. Un ancla histórica, descomposición disciplinada, rangos claros y revisión continua te bastarán para convertir los story points en una métrica útil —y no en un acto de magia.
+
+**Recuerda**: según la RAE; "estimar" es
+> Hecho o efecto de estimar, espec. **el valor aproximado de algo**
+
+No estamos estimando en horas, sino en esfuerzo, por lo tanto, siempre será un valor aproximado que nos permitirá obtener un marco de referencia para abrir una conversación.

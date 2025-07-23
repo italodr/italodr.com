@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"section">;
+
+const { class: className, ...props } = Astro.props;
+---
+
+<section class:list={["columns", className]} {...props}>
+  <slot name="left" />
+  <slot name="right" />
+</section>
+
+<style>
+  .columns {
+    display: grid;
+    gap: 2rem;
+
+    @media (min-width: 48em) {
+      grid-template-columns: 1fr 1.75fr;
+    }
+  }
+</style>

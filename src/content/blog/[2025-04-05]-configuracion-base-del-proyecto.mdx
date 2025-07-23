@@ -1,0 +1,269 @@
+---
+title: "Capítulo 2: Configuración base del proyecto"
+slug: "libreria-de-componentes-en-monorepo/configuracion-base-del-proyecto"
+description: "En este capítulo configuraremos todo lo necesario para que un paquete de componentes UI pueda compilar, tipar, distribuir y testearse de forma independiente dentro del monorepo. Usaremos SWC, TypeScript, pnpm y buenas prácticas para asegurar una build rápida y robusta."
+categories: ["Desarrollo"]
+tags: "react,components,monorepo,storybook,ui"
+pubDate: "2025-04-05"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+import InternalLink from "@/components/InternalLink.astro";
+
+<ExternalLink href="https://github.com/italodr/demo-component-library/commit/ce5bc86da63fa74b9ca96cd0c8976a8d90fc2a73">Enlace al commit en Github de este capítulo</ExternalLink>
+
+## Estructura del paquete
+
+Vamos a crear un componente de ejemplo llamado `hero`. La estructura típica del paquete será:
+
+```text
+packages/
+└── hero/
+    ├── src/
+    │   ├── Hero.tsx
+    │   ├── index.ts
+    │   └── styles.css
+    ├── dist/              # (generado tras build)
+    ├── package.json
+    ├── tsconfig.json
+    ├── tsconfig.build.json
+    └── .swcrc
+```
+
+## `package.json` del paquete
+
+Cada paquete es una unidad autocontenida. Aquí tienes un ejemplo:
+
+```json
+{
+    "name": "@myui/hero",
+    "version": "0.1.0",
+    "main": "dist/index.js",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "type": "module",
+    "files": ["dist"],
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./css": {
+            "import": "./dist/styles.css",
+            "require": "./dist/styles.css",
+            "default": "./dist/styles.css"
+        },
+        "./module.css": {
+            "import": "./dist/styles.module.css",
+            "require": "./dist/styles.module.css",
+            "default": "./dist/styles.module.css"
+        }
+    },
+    "scripts": {
+        "build": "pnpm clean && pnpm build:swc && pnpm build:types && pnpm copyfiles && pnpm build:moduleCss",
+        "build:swc": "swc ./src -d ./dist --config-file .swcrc --ignore **/*.test.tsx,**/*.test.ts,**/*.stories.tsx --strip-leading-paths",
+        "build:types": "tsc --emitDeclarationOnly --project tsconfig.build.json --outDir dist",
+        "build:moduleCss": "sed -e 's/.*__/./' -e '/:root {/,/}/d' src/styles.css > dist/styles.module.css",
+        "clean": "rm -rf dist",
+        "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/",
+        "lint": "eslint src",
+        "lint:fix": "eslint --fix --ext .ts,.tsx src",
+        "test": "jest",
+        "prepublishOnly": "pnpm clean && pnpm build"
+    },
+    "dependencies": {
+        "react": "19.1.0"
+    },
+    "devDependencies": {
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6",
+        "copyfiles": "^2.4.1",
+        "typescript": "5.8.3"
+    }
+}
+```
+
+## Configuración de TypeScript
+
+`tsconfig.json` del paquete:
+
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"]
+}
+```
+
+`tsconfig.build.json` (solo para tipos):
+
+```json
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false
+  }
+}
+```
+
+## Compilación con SWC
+
+Usamos swc para compilar el código de TypeScript/JSX a JS moderno, sin el coste de Babel.
+
+`.swcrc` en cada paquete:
+
+```json
+{
+  "$schema": "https://swc.rs/schema.json",
+  "sourceMaps": true,
+  "jsc": {
+    "target": "esnext",
+    "parser": {
+      "syntax": "typescript",
+      "tsx": true,
+      "dts": true
+    },
+    "transform": {
+      "react": {
+        "runtime": "automatic",
+        "pragmaFrag": "React.Fragment",
+        "throwIfNamespace": true,
+        "development": false,
+        "useBuiltins": true
+      }
+    }
+  },
+  "module": {
+    "type": "es6"
+  }
+}
+```
+
+## CSS modular exportable
+
+Convertimos `styles.css` a `styles.module.css` en el `dist/` automáticamente, gracias al uso de la metodología <ExternalLink href="https://getbem.com/">BEM (Block Element Modifier)</ExternalLink> y el siguiente script que tenemos en nuestro `package.json`:
+
+```bash
+sed -e 's/.*__/./' -e '/:root {/,/}/d' src/styles.css > dist/styles.module.css
+```
+
+Esto permite exponer estilos reutilizables sin exponer variables globales.
+
+## Creemos nuestro primer componente
+
+Al ser un componente de ejemplo, vamos a crear un componente de hero simple, con pocas variables y estilos básicos.
+
+Creamos el archivo `src/Hero.tsx`:
+
+```tsx
+import React from "react";
+
+type HeroProps = React.PropsWithChildren<{
+  title: string;
+  description?: string;
+  image?: string;
+}> & React.HTMLAttributes<HTMLElement>;
+
+export function Hero({
+  className,
+  title,
+  description,
+  image,
+  children,
+  ...props
+}: HeroProps) {
+  const backgroundImage = image ? { backgroundImage: `url(${image});` } : {};
+  return (
+    <section
+      className={`hero ${className}`}
+      {...props}
+      style={{ ...(props?.style ?? {}), ...backgroundImage }}
+    >
+      <div className="hero__content">
+        <h1 className="hero__title">{title}</h1>
+        {description && <p className="hero__description">{description}</p>}
+        {children}
+      </div>
+    </section>
+  );
+}
+```
+
+Recibirá el título, la descripción y la imagen de fondo, y renderizará un `section` con el contenido.
+
+Creamos el archivo `src/index.ts`:
+
+```tsx
+export * from "./Hero";
+```
+
+Creamos el archivo `src/styles.css`:
+
+```css
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100dvh;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero__content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  width: 100%;
+  max-width: 60rem;
+  padding: 1rem 1.5rem;
+}
+
+.hero__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+```
+
+Como mencionamos anteriormente, usaremos la metodología <ExternalLink href="https://getbem.com/">BEM (Block Element Modifier)</ExternalLink> para nombrar crear el archivo module automaticamente.
+
+## Prueba rápida
+
+Ahora puedes hacer:
+
+```bash
+# Instalamos las dependencias de todos los paquetes
+pnpm install
+
+# Compilamos el paquete recien creado
+pnpm build --filter @myui/hero
+```
+
+Y verás tu código transpilado y tipado dentro de `dist/`.
+
+Finalmente, añadimos las siguientes carpetas a nuestro `.gitignore` para que no se incluya en el commit:
+
+```text
+.turbo
+dist
+```
+
+## Próximo capítulo
+
+En el Capítulo 3:
+
+- Añadiremos `jest` o `vitest` para pruebas unitarias.
+- Configuraremos `@testing-library/react`, `jest-axe` y `jsdom`.
+- Integraremos testing accesible desde el primer componente.
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/testing-accesible-con-jest-testing-library-vitest">Ir al siguiente capítulo</InternalLink><br /><br />
+<InternalLink href="/libreria-de-componentes-en-monorepo">Volver a la lista de capítulos</InternalLink>

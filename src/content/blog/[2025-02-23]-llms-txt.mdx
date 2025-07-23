@@ -1,0 +1,42 @@
+---
+title: "LLMs .txt: el nuevo puente entre tu web y los modelos de lenguaje"
+slug: "llms-txt"
+draft: false
+description: ""
+categories: ["Desarrollo", "IA"]
+tags: "llms,ia"
+pubDate: "2025-02-23"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+
+## ¿Por qué necesitamos un llms.txt?
+
+Los grandes modelos de lenguaje (LLM) ya no solo entrenan con la Web: también la consultan en vivo cuando respondemos preguntas. Sin embargo, su ventana de contexto sigue siendo limitada y el HTML de un sitio está repleto de navegación, JavaScript y anuncios que estorban. Para solventarlo, <ExternalLink href="https://www.answer.ai/posts/2024-09-03-llmstxt.html">Jeremy Howard propuso en septiembre de 2024 estandarizar un archivo /llms.txt</ExternalLink> en la raíz de cada dominio. Allí, la persona propietaria del sitio ofrece un resumen limpio —en Markdown— de su contenido clave, listo para que los agentes lo carguen de un solo golpe.
+
+`llms.txt` es al Generative Engine Optimization (GEO) lo que `robots.txt` es al SEO: un manifiesto legible por humanos y máquinas que describe tu contenido, pero pensado específicamente para LLMs y chatbots. A diferencia de los sitemaps, no enumera todas tus URLs; describe solo lo esencial y puede enlazar versiones .md de tus páginas para que la IA las consuma sin ruido.
+
+Según la especificación, esta es la estructura mínima requerida:
+
+```txt
+# Title
+
+> Optional description goes here
+
+Optional details go here
+
+## Section name
+
+- [Link title](https://link_url): Optional link details
+
+## Optional
+
+- [Link title](https://link_url)
+```
+
+## Beneficios claves
+
+- **Contexto condensado**: los agentes pueden citar tu documentación completa sin perderse en 50 pestañas.
+- **Control editorial**: eliges qué páginas o fragmentos expones y con qué nivel de detalle.
+- **Velocidad**: al evitar el rendering de HTML, reduces llamadas y ahorras tokens.
+- **Aplicabilidad universal**: se puede usar en cualquier tipo de proyecto desde una librería open-source hasta un e-commerce o el blog de tu CV.

@@ -1,0 +1,165 @@
+---
+title: "Los patrones WAI-ARIA que todavía rompemos sin querer"
+slug: "patrones-wai-aria-que-rompemos-sin-querer"
+description: ""
+categories: ["Accesibilidad", "Desarrollo"]
+tags: "accessibilidad,aria,wai,frontend,desarrollo"
+pubDate: "2024-02-13"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+
+Aunque llevemos años aplicando buenas prácticas de accesibilidad, hay ciertos patrones WAI-ARIA que se siguen escapando en el código del día a día. En muchos casos el problema no es falta de buena voluntad, sino detalles sutiles de la especificación que resultan fáciles de pasar por alto. Estos son los errores que con más frecuencia veo —y cometo— en proyectos reales.
+
+## 1. Botones "div" que no se comportan como botones
+
+Crear un `<div>` con `role="button"` no lo convierte mágicamente en accesible. Para que los usuarios de teclado y tecnología asistiva reciban la experiencia correcta, hay que añadir:
+
+```html
+<div role="button"
+  tabindex="0"
+  aria-pressed="false"
+  onclick="handleOnSubscribe(this)"
+  onkeydown="if(event.key === 'Enter' || event.key === ' ') handleOnSubscribe(this)">
+  Suscríbete
+</div>
+```
+
+- `tabindex="0"` lo incluye en el orden de tabulación.
+- Se gestionan los eventos `Enter` y barra espaciadora.
+- Si el botón es conmutador (toggle), actualiza `aria-pressed`.
+
+**Nota mental**: si tienes que recrear toda la interacción nativa… usa un `<button>`, que para eso está, y elimina el quebradero de cabeza.
+
+## 2. Elementos desplegables sin anunciar su estado
+
+Un acordeón o menú "hamburguesa" que solo cambia clases visuales deja a los lectores de pantalla sin contexto.
+
+```html
+<button aria-expanded="false" aria-controls="filters" id="toggleFiltros">
+  Filtros
+</button>
+<ul id="filters" aria-hidden="true">
+  <!-- Pon aquí tu contenido -->
+</ul>
+```
+
+Actualiza `aria-expanded` a **true**/**false** y modifica el valor del atributo `aria-hidden="true"`. Así el lector de pantalla anuncia "Contraído / Expandido" y los usuarios saben qué esperar.
+
+## 3. Detalles que desaparecen con aria-hidden
+
+`aria-hidden="true"` oculta todo el sub-árbol del DOM, incluso si contiene información crítica. Se usa a menudo para quitar de en medio un elemento visual decorativo y se olvida que el texto ya no será narrado nunca.
+
+Revisa siempre:
+- ¿Esa parte oculta es realmente decorativa?
+- ¿Podría revelarse luego (modal, tooltip)? Entonces `aria-hidden` debe cambiar dinámicamente.
+
+**Nota mental**: no digo que `aria-hidden="true"` sea la mejor solución para ocultar contenido para casos dinámicos. Esta aclaración es para resolver el caso actual y que no se pueda modificar el DOM por algún motivo.
+
+## 4. Nombres accesibles fantasma
+
+Añadir simultáneamente `aria-label` y texto visible dentro del mismo elemento crea nombres duplicados ("Cerrar Cerrar"). Usa una sola fuente de nombre:
+
+```html
+<!-- ❌ Incorrecto: el SVG aporta el título y se duplica en el lector de pantalla -->
+<button aria-label="Cerrar">
+  <svg aria-hidden="true">…</svg>
+  Cerrar
+</button>
+
+<!-- ✅ Correcto: el SVG no aporta el título; la etiqueta lo hace o viceversa -->
+<button aria-label="Cerrar">
+  <svg aria-hidden="true">…</svg>
+</button>
+```
+
+Si hay texto visible ("Cerrar"), elimina `aria-label` o usa `aria-hidden="true"` en el icono.
+
+## 5. Live regions que nunca se actualizan
+
+`aria-live="polite"` es útil para mensajes emergentes ("El mensaje se ha enviado correctamente"). Pero si cambias el contenido mediante CSS (por ejemplo, con `:before`) o solo añades clases, la tecnología asistiva no se enterará: la región debe modificarse en el DOM (`innerText`/`innerHTML`) para que el lector lo anuncie.
+
+## 6. role="presentation" con faldas y a lo loco
+
+Asignar `role="presentation"`, o su sinónimo `role="none"`, a tablas, listas o iconos puede ayudar a organizar el orden en el contenido semántico, pero nunca lo uses en un elemento interactivo. Ya que le indica explícitamente a la tecnología asistiva que ignore por completo ese nodo y todos los roles semánticos de su árbol de descendencia.
+
+## 7. Etiquetado correcto de los campos de formulario
+
+Cada control de formulario —campos de texto, casillas, radios, selects y botones— necesita un nombre relevante al campo utilizado.
+
+1. En la mayoría de los casos, utiliza siempre `<label>` + `for`. La asociación explícita (for/id) amplía el área clicable y garantiza que el lector de pantalla anuncie la etiqueta correcta.
+
+```html
+<label for="email">Correo electrónico:</label>
+<input type="email" id="email" name="email">
+```
+
+2. Si la etiqueta, por algún motivo, no debe ser visible, escóndela solo visualmente. Una clase utilitaria (`.visually-hidden`) mantiene el texto fuera de la pantalla, pero dentro del árbol accesible. Evita `display:none` o `visibility:hidden`, que lo eliminan por completo.
+
+```html
+<label for="search" class="visually-hidden">Buscar:</label>
+<input type="search" id="search">
+
+<style>
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+</style>
+```
+
+3. Recurre a `aria-label` o `aria-labelledby` solo cuando el uso de `<label>` no sea viable
+
+```html
+<input type="search" id="search" aria-label="Buscar" />
+<button type="button">Buscar</button>
+
+<input type="search" id="search" aria-labelledby="search-button" />
+<button type="button" id="search-button">Buscar</button>
+```
+
+Estas alternativas no ofrecen pista visual, así que úsalas con moderación.
+
+## 8. tabindex positivo: callejón sin salida
+
+`tabindex="1"` (o, peor aún... mayor que 1) parece inocente, pero perturba el orden natural de tabulación y excluye elementos sin valor `tabindex`. Reserva `tabindex="0"` para cualquier cosa que deba ser focalizable y evita números positivos.
+
+¿Por qué solo utilizar `tabindex="0"`? Porque el orden de tabulación lo marca el número de `tabindex` que tenga el elemento. Si es 0, se incluye en el orden de tabulación, es decir, según la aparición en el DOM. Si es mayor que 0, toma prioridad sobre los elementos con `tabindex="0"` o menores que él.
+
+## 9. Listas que no son listas
+
+Un carrusel de testimonios puede presentarse como:
+
+```html
+<div role="list">
+  <div role="listitem">Testimonio 1</div>
+  <div role="listitem">Testimonio 2</div>
+</div>
+```
+
+Sin `role="list"` y `role="listitem"`, las tecnologías asistivas pierden la información de que hay un conjunto con _n_ elementos; esa orientación es crucial para navegar a través de los elementos.
+
+**Nota mental**: lo mejor es utilizar los elementos semánticos que ya existen. Ya sean `<ul>`, `<ol>` o `<dl>`.
+
+## 10. aria-disabled sin soporte de teclado
+
+Marcar un botón como `aria-disabled="true"` informa al lector, pero no evita que reciba foco ni clic. Si tu intención es deshabilitar el botón bloqueando la interacción, utiliza el atributo nativo `disabled`.
+
+```html
+<button disabled aria-disabled="true">Guardar</button>
+```
+
+---
+
+## Consejos para evitar estos errores
+
+1. Te recomiendo invertir un poco de tu tiempo en formarte para el uso de lectores de pantalla (NVDA, VoiceOver)
+2. Dedica un poco de tu tiempo a probar con el teclado en todos los flujos de tu aplicación.
+3. Utiliza linters y pruebas automatizadas: axe-core, storybook, etc. detectan muchos fallos antes de que lleguen a producción.
+4. Revisa la especificación <ExternalLink href="https://www.w3.org/WAI/ARIA/apg/">ARIA Authoring Practices</ExternalLink>: los patrones oficiales incluyen ejemplos de código actualizados.
+5. Menos ARIA, más HTML: si un elemento nativo resuelve el problema, úsalo; el código será accesible por defecto.

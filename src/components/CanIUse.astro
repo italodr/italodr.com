@@ -1,0 +1,31 @@
+---
+// Obtener info de https://caniuse-embed.vercel.app/
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"div"> & {
+  feature: string;
+  meta: string;
+  past?: number;
+  future?: number;
+};
+
+const { feature, past, future, meta } = Astro.props;
+---
+
+<div
+  class="ciu-embed"
+  data-feature={feature}
+  data-past={past ?? 2}
+  data-future={future ?? 1}
+  data-meta={meta}
+  data-title="Compatibilidad de navegadores"
+>
+</div>
+
+<script type="module" src="https://caniuse-embed.vercel.app/embed.js"></script>
+
+<style>
+  .ciu-embed {
+    margin-bottom: 3rem;
+  }
+</style>

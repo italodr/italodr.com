@@ -1,0 +1,150 @@
+---
+import DefaultLayout from "@/layouts/Default.astro";
+import Hero from "@/components/Hero.astro";
+import Badge from "@/components/Badge.astro";
+import ExternalLink from "@/components/ExternalLink.astro";
+import { LINKEDIN_URL } from "@/consts";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "es" } }, { params: { lang: "en" } }];
+}
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<DefaultLayout title="Sobre mi">
+  <Hero>
+    <h1><Badge class="hero-badge">{t("about")}</Badge></h1>
+    <p class="h2 display">
+      Soy Italo Devoto Ramella, <b>ingeniero full-stack</b> y líder tecnológico con <b
+        >visión estratégica</b
+      >, radicado en Barcelona, España.
+    </p>
+  </Hero>
+  <section class="container container--small">
+    <h2>Últimas experiencias profesionales</h2>
+    <ul class="experience">
+      <li>
+        <Badge>Head of Product & Tech Lead</Badge>
+        <h3>netzstrategen GmbH</h3>
+        <p>
+          Actualmente trabajo en <ExternalLink href="https://netzstrategen.com"
+            >netzstrategen GmbH</ExternalLink
+          > como Head of Product & Tech Lead.
+        </p>
+        <p>Mis principales responsabilidades son:</p>
+        <ul class="list">
+          <li>
+            <b>Product ownership</b>: discovery, priorización y documentación para convertir
+            objetivos de negocio en roadmaps medibles.
+          </li>
+          <li>
+            <b>Dirección técnica</b> integral en Next.js, PostgreSQL y MongoDB, definiendo arquitectura
+            y despliegues cloud.
+          </li>
+          <li>
+            <b>Gobernanza de procesos</b>: librería interna de componentes que unifica diseño &
+            código y acelera releases.
+          </li>
+          <li>
+            <b>Analytics & AI</b>: pipelines de datos, dashboards y servicios de ML/IA para
+            decisiones basadas en <span lang="en">KPI</span>.
+          </li>
+          <li>
+            <b>Liderazgo de equipo</b>: planificación, estimaciones y mentoría dentro de una cultura
+            DevOps y de mejora continua.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <Badge>Lead Frontend Developer</Badge>
+        <h3>Stooa</h3>
+        <p>
+          Trabajé en <ExternalLink href="https://stooa.com">Stooa</ExternalLink> como Lead Frontend Developer.
+        </p>
+        <p>Mis principales responsabilidades fueron:</p>
+        <ul class="list">
+          <li>
+            Construir la versión inicial de la plataforma (React + Redux + Jitsi) para <b
+              >sesiones fishbowl en tiempo real</b
+            >.
+          </li>
+          <li>
+            Definir patrones de estado, <span lang="en">routing</span> y <span lang="en">UI</span>,
+            sentando la base de un <b>diseño de componentes reutilizables</b>.
+          </li>
+          <li>
+            Colaborar en la definición del proyecto y su estructura como <b
+              >iniciativa open source</b
+            >, facilitando contribuciones externas y transparencia de código.
+          </li>
+          <li>
+            Trabajar con diseño / <span lang="en">UX</span> para iterar rápidamente sobre prototipos
+            y métricas de conversión.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <Badge>Head of Frontend</Badge>
+        <h3>Runroom</h3>
+        <p>
+          Empecé trabajando como Full-Stack Developer en <ExternalLink href="https://runroom.com"
+            >Runroom</ExternalLink
+          >, desarrollando aplicaciones web con PHP, Symfony, Drupal, Twig, React y SCSS,
+          principalmente. En este tiempo, implementé un producto interno para la gestión y
+          automatización de creación de contenido. <b
+            >Reduciendo los tiempos de desarrollo en ~60%</b
+          >.
+        </p>
+        <p>
+          Posteriormente, pasé a liderar el equipo de desarrollo frontend como Head of Frontend.
+        </p>
+        <p>Mis principales responsabilidades fueron:</p>
+        <ul class="list">
+          <li>
+            <b>Liderar un equipo</b> de 8 desarrolladores, estableciendo estándares de calidad, flujo
+            Git y guía de estilos.
+          </li>
+          <li>Participar en la <b>definición estratégica</b> de proyectos y elección de stacks.</li>
+          <li>
+            Implementar <b>auditorías de rendimiento y accesibilidad</b> para varios clientes.
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+  <section class="container container--small">
+    <h2>Docencia</h2>
+    <ul>
+      <li>
+        <Badge>BAU - Centro Universitario de Diseño</Badge>
+        <p>Docente / Coach tecnológico en el <b>Máster en Diseño de Experiencias Digitales</b></p>
+      </li>
+      <li>
+        <Badge>IED - Istituto Europeo di Design</Badge>
+        <p>Formador en el <b>Curso de Business Design</b></p>
+      </li>
+    </ul>
+  </section>
+  <section class="container container--small">
+    <p>
+      Para más información, puedes <ExternalLink href={LINKEDIN_URL}
+        >consultar mi perfil de LinkedIn</ExternalLink
+      >.
+    </p>
+  </section>
+</DefaultLayout>
+
+<style>
+  h1 {
+    margin-bottom: 0;
+  }
+
+  .experience {
+    > li:not(:last-child) {
+      margin-bottom: 4rem;
+    }
+  }
+</style>

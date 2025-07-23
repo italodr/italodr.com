@@ -1,0 +1,50 @@
+---
+import DefaultLayout from "@/layouts/Default.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import Hero from "@/components/Hero.astro";
+import Badge from "@/components/Badge.astro";
+import { getCollection, render } from "astro:content";
+import { useTranslations } from "@/i18n/utils";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("blog")).filter((post) => post.data?.draft !== true);
+  return posts.map((post) => ({
+    params: { slug: post.data.slug },
+    props: post,
+  }));
+}
+
+const post = Astro.props;
+const { Content } = await render(post);
+
+const { title, description, pubDate, updatedDate } = post.data;
+const t = useTranslations("es");
+---
+
+<DefaultLayout title={`${title} | Blog`} description={description}>
+  <article>
+    <Hero>
+      <Badge class="hero-badge">
+        <FormattedDate date={pubDate} />
+      </Badge>
+      <h1>{title}</h1>
+      {description && <p class="description">{description}</p>}
+      {
+        updatedDate && (
+          <Badge class="hero-badge updated-on">
+            {t("lastUpdatedOn")} <FormattedDate date={updatedDate} />
+          </Badge>
+        )
+      }
+    </Hero>
+    <section class="container container--small post-content">
+      <Content />
+    </section>
+  </article>
+</DefaultLayout>
+
+<style>
+  .updated-on {
+    font-size: 0.875rem;
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ArrowUpRight from "@/components/ArrowUpRight.astro";
+
+type Props = HTMLAttributes<"a">;
+
+const { href, class: className, ...props } = Astro.props;
+---
+
+<a href={href} class:list={[className]} {...props}>
+  <ArrowUpRight />
+  <slot />
+</a>
+
+<style>
+  a:not(.inline) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+</style>

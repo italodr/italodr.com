@@ -1,0 +1,170 @@
+---
+title: "Capítulo 6: Automatización con GitHub Actions — CI/CD para tu librería UI"
+slug: "libreria-de-componentes-en-monorepo/automatizacion-con-github-actions"
+description: "Ahora tenemos un monorepo moderno, bien estructurado, versionado y con documentación. Ahora es momento de llevarlo al siguiente nivel: automatizar todo con GitHub Actions."
+categories: ["Desarrollo"]
+tags: "react,components,monorepo,github"
+pubDate: "2025-05-01"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+import InternalLink from "@/components/InternalLink.astro";
+
+<ExternalLink href="https://github.com/italodr/demo-component-library/commit/b96d828566054d13c566e6b9e8a25f36756fb771">Enlace al commit en Github de este capítulo</ExternalLink><br /><br />
+
+En este capítulo configuraremos workflows para:
+
+- Validar builds y tests en cada PR.
+- Versionar con Changesets.
+- Publicar automáticamente los paquetes con pnpm.
+
+## Estructura de workflows
+
+Dentro del directorio `.github/workflows/` añadiremos:
+
+```text
+.github/
+└── workflows/
+    ├── ci.yml           # Build, lint, test
+    ├── release.yml      # Versionado y publicación automática
+```
+
+## `ci.yml`: Validación en cada PR
+
+Este workflow se ejecuta en cada push a cualquier rama y valida lo siguiente:
+
+- Linting
+- Build
+- Tests
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  check:
+    name: Lint, Test & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node & pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+```
+
+## `release.yml`: Publicación automática con Changesets
+
+Este workflow se ejecuta cuando haces push a main y hay un changeset pendiente.
+
+**Requiere que configures tu `NPM_TOKEN` y `GITHUB_TOKEN` en los Secrets del repo.**
+
+```yaml
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Version & Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node & pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: "https://registry.npmjs.org/"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Create version
+        run: pnpm changeset:version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit and push version changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: release"
+          git push
+
+      - name: Publish to npm
+        run: pnpm publish -r --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+```
+
+## ¿Qué necesitas en tus Secrets?
+
+En tu repositorio → Settings → Secrets → Actions:
+
+| Secret | Descripción |
+| :--- | :--- |
+| NPM_TOKEN | Tu token de acceso a npm |
+| GITHUB_TOKEN | Lo genera GitHub automáticamente |
+
+## ¿Cómo probarlo?
+
+Una manera sencilla de probarlo es subir un PR y ver que se ejecuta el workflow de CI.
+
+1. Haz una rama y cambia algo en un componente.
+2. Ejecuta `pnpm changeset` para añadir el changeset.
+3. Haz push → se ejecuta `ci.yml`.
+4. Haz merge a main → se ejecuta `release.yml`, se versiona y publica.
+
+Pero, podemos probarlo localmente con la <ExternalLink href="https://nektosact.com/">`act`</ExternalLink>. Installa `act` según tu sistema operativo. Una vez instalado, puedes ejecutar los siguientes comandos:
+
+```bash
+act -l             # Listar los workflows disponibles
+act -n             # Ejecutar los workflows en modo dry-run
+```
+
+
+## Próximo capítulo
+
+En el capítulo 7 (último de esta guía) realizaremos el mantenimiento del monorepo con Syncpack y haremos un listado de buenas prácticas:
+
+- Sincronización de dependencias con syncpack
+- Limpieza de paquetes
+- Organización visual y semántica del sistema de componentes
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/mantenimiento-del-monorepo-con-syncpack-y-buenas-practicas">Ir al siguiente capítulo</InternalLink><br /><br />
+<InternalLink href="/libreria-de-componentes-en-monorepo">Volver a la lista de capítulos</InternalLink>

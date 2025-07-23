@@ -1,0 +1,17 @@
+---
+
+---
+
+<div class="horizontal-scroll">
+  <slot />
+</div>
+
+<style>
+  .horizontal-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-snap-align: start;
+    scroll-behavior: smooth;
+  }
+</style>

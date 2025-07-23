@@ -1,0 +1,168 @@
+---
+title: "Capítulo 3: Testing accesible con Jest, Testing Library y Vitest (opcional)"
+slug: "libreria-de-componentes-en-monorepo/testing-accesible-con-jest-testing-library-vitest"
+description: "En este capítulo vamos a configurar el entorno de testing para tus paquetes de componentes. Nos centraremos en `Jest`, junto con `@testing-library/react` y `jest-axe` para asegurar que tus componentes sean funcionales, accesibles y fáciles de testear. También mostraré cómo podemos usar `Vitest` como alternativa."
+categories: ["Desarrollo"]
+tags: "react,components,monorepo,storybook,ui,testing,jest,vitest,testing-library,axe"
+pubDate: "2025-04-11"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+import InternalLink from "@/components/InternalLink.astro";
+
+<ExternalLink href="https://github.com/italodr/demo-component-library/commit/5bb8f2f6f85e25290ae44428b252c8c399e72c76">Enlace al commit en Github de este capítulo</ExternalLink><br /><br />
+<ExternalLink href="https://github.com/italodr/demo-component-library/commit/87addffe308972004952ce206a5cc5645bf8899e">Enlace al commit en Github de la versión alternativa con Vitest</ExternalLink>
+
+## ¿Por qué este stack?
+
+- `Jest`: maduro, estable, compatible con React 19 y jsdom.
+- `@testing-library/react`: permite testear desde la perspectiva del usuario.
+- `jest-axe`: realiza comprobaciones automáticas de accesibilidad.
+- `Vitest` (opcional): más rápido, integrado con Vite, pero requiere configuración adicional en monorepos.
+
+## Instalación de dependencias
+
+Si prefieres utilizar `Vitest`, puedes saltar a la sección [Alternativa: Vitest (si prefieres Vite)](#alternativa-vitest-si-prefieres-vite). Igualmente, puedes seguir con `Jest` para este capítulo y añadir `Vitest` en el siguiente, reutilizaremos parte de la configuración de `Jest` para `Vitest`. Y así puedes probar ambos.
+
+Vamos a instalar las dependencias necesarias para el testing.
+
+```bash
+pnpm add -D jest ts-jest jest-environment-jsdom \
+  @testing-library/react @testing-library/jest-dom \
+  @testing-library/user-event jest-axe \
+  @types/jest @types/jest-axe @swc/jest -w
+```
+
+El flag `-w` es para que se instalen las dependencias en la raíz del proyecto.
+
+## Configuración de Jest
+
+Crea un archivo `jest.config.js` en la raíz del proyecto:
+
+```js
+/** @type {import("jest").Config} */
+module.exports = {
+  roots: ["<rootDir>"],
+  testMatch: ["**/*.test.{ts,tsx}"],
+  transform: {
+    "^.+\\.(ts|tsx)$": "@swc/jest"
+  },
+  setupFilesAfterEnv: ["<rootDir>/setupTests.js"],
+  testEnvironment: "jsdom",
+  moduleNameMapper: {
+    "\\.(css|scss)$": "identity-obj-proxy"
+  }
+};
+```
+
+Crea un archivo `setupTests.js` en la raíz del proyecto:
+
+```js
+import "@testing-library/jest-dom";
+import "jest-axe/extend-expect";
+```
+
+Añade un archivo `jest.config.cjs` en cada paquete (por ejemplo en `packages/hero/`), ya que nuestro paquete tiene `"type": "module"`, es necesario que tenga un archivo con la extensión `.cjs` para que se interprete como CommonJS:
+
+```js
+module.exports = require('../../jest.config.js');
+```
+
+Añade la siguiente línea en tu archivo `tsconfig.base.json` para que el compilador de Jest pueda encontrar los tipos de TypeScript:
+
+```json
+{
+  "compilerOptions": {
+    ...
+    "types": ["jest", "@testing-library/jest-dom", "jest-axe"]
+  }
+}
+```
+
+## Ejemplo de test accesible
+
+Creamos `Hero.test.tsx` en `packages/hero/src/`:
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
+import { Hero } from "./Hero";
+
+describe("Hero", () => {
+  it("should render correctly", () => {
+    render(<Hero title="Test Title" description="Test Description" />);
+    expect(screen.getByRole("heading", { name: "Test Title" })).toHaveTextContent("Test Title");
+    expect(screen.getByText("Test Description")).toHaveTextContent("Test Description");
+  })
+
+  it("should be accessible", async () => {
+    const { container } = render(<Hero title="Test Title" description="Test Description" />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  })
+})
+```
+
+## Script de test en package.json
+
+En pasos anteriores, añadimos el script `test` en el `package.json`. Así que ahora podemos ejecutar los tests con:
+
+```bash
+pnpm test --filter @myui/hero
+```
+
+## Alternativa: Vitest (si prefieres Vite)
+
+`Vitest` es más rápido y moderno, especialmente si usas `Vite` como bundler. Puedes usarlo así:
+
+```bash
+pnpm add -D vitest jsdom @testing-library/react @testing-library/jest-dom jest-axe -w
+```
+
+Crea un archivo `vitest.config.ts` en la raíz del proyecto:
+
+```ts
+import { defineConfig } from "vitest/config";
+import path from "path";
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: [path.resolve(__dirname, "./setupTests.js")]
+  }
+});
+```
+
+Crea un archivo `setupTests.js` en la raíz del proyecto, si no has seguido los pasos de `Jest`:
+
+```js
+import "@testing-library/jest-dom";
+import "jest-axe/extend-expect";
+```
+
+Actualiza el script `test` en el `package.json` de cada paquete para usar `vitest`:
+
+```json
+"scripts": {
+  ...
+  "test": "vitest run"
+}
+```
+
+Y ejecutamos los tests con:
+
+```bash
+pnpm test --filter @myui/hero
+```
+
+## Próximo capítulo
+
+En el Capítulo 4 vamos a integrar Storybook para que puedas:
+
+- Visualizar tus componentes de forma aislada,
+- Documentar variantes y props,
+- Y eventualmente convertir docs/ en un sitio navegable.
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/documentacion-interactiva-con-storybook">Ir al siguiente capítulo</InternalLink><br /><br />
+<InternalLink href="/libreria-de-componentes-en-monorepo">Volver a la lista de capítulos</InternalLink>

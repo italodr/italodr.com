@@ -1,0 +1,108 @@
+---
+title: "Cómo crear un componente de tabs accesible"
+slug: "como-crear-componente-tabs-accesible"
+description: "Los tabs son una estructura de navegación que permite a los usuarios navegar entre diferentes secciones de una página. Son una herramienta esencial para la accesibilidad, pero hay que tener en cuenta algunos detalles para que sean accesibles."
+categories: ["Accesibilidad", "Desarrollo", "UX"]
+tags: "accesibilidad,tabs,html,css"
+pubDate: "2024-09-21"
+---
+
+import Tabs from "@/content/snippets/Tabs";
+import HorizontalScroll from "@/components/HorizontalScroll.astro";
+import ExternalLink from "@/components/ExternalLink.astro";
+import CanIUse from "@/components/CanIUse.astro";
+
+Las tabs (pestañas) son muy populares para agrupar contenido relacionado sin recargar la pantalla, pero también encierran algunos riesgos: parte de la información queda oculta, la interacción puede ser exclusivamente con el ratón y las tecnologías asistivas necesitan saber qué pestaña está activa.
+
+## Comportamiento de teclado y gestión del foco
+
+Se definen los siguientes comportamientos de referencia (activación automática):
+
+- <kbd>Tab</kbd> entra en el tablist, aterriza en la pestaña activa y luego salta al tabpanel.
+- <kbd>Flechas derecha/izquierda</kbd> recorren las pestañas; al mover el foco se activa la nueva pestaña.
+- <kbd>Home/End</kbd> saltan a la primera o última pestaña.
+
+### Criterios de éxito (SC) asociados al componente de tabs
+
+<HorizontalScroll>
+| SC | Nombre | Cómo afecta a tabs | Nivel |
+| :--- | :--- | :--- | :--- |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html">1.3.1</ExternalLink> | Info and Relationships | Roles ARIA definen la relación pestaña-panel para usuarios de AT | A |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html">2.1.1</ExternalLink> | Keyboard | Navegación y activación deben funcionar sin ratón | A |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html">2.4.3</ExternalLink> | Focus Order | El foco pasa de la pestaña activa al panel en secuencia lógica | A |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG21/Understanding/focus-visible.html">2.4.7</ExternalLink> | Focus Visible / <ExternalLink href="https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html">2.4.13</ExternalLink> | El indicador de foco debe ser perceptible y cumplir las métricas de contraste/tamaño | AA |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html">2.4.11-12</ExternalLink> | Focus Not Obscured | Nada debería tapar el foco al cambiar de pestaña | AA/AAA |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG22/Understanding/label-in-name.html">2.5.3</ExternalLink> | Label in Name | El texto visible de la pestaña debe coincidir con su nombre accesible para que los comandos de voz funcionen | A |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG22/Understanding/on-focus.html">3.2.1</ExternalLink> | On Focus | Activar la pestaña al recibir foco es válido siempre que no cambie de contexto (por ejemplo, no abra otra página) | A |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html">4.1.2</ExternalLink> | Name, Role, Value | Los roles tab/tabpanel y los estados aria-selected deben ser actualizados en tiempo real | A |
+| <ExternalLink href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html">1.4.11</ExternalLink> | Non-text Contrast | Bordes, iconos o fondo de la pestaña activa necesitan 3:1 frente a elementos adyacentes | AA |
+</HorizontalScroll>
+
+## Lista de verificación rápida
+
+- ¿Se puede navegar, seleccionar y leer cada panel sólo con teclado?
+- ¿Existe un foco visible y nunca queda fuera de pantalla?
+- ¿Roles `tablist`, `tab`, `tabpanel` y atributos `aria-selected`, `aria-controls`, `aria-labelledby` están correctos?
+- ¿El texto visible de la pestaña coincide con su nombre accesible?
+- ¿Bordes/íconos activos tienen contraste ≥ 3 : 1?
+
+## Ejemplo de implementación
+
+<Tabs client:only="react" />
+
+### Elemento seleccionado por defecto
+
+```tsx
+useEffect(() => {
+  tabsRef.current = tabsRef.current.slice(0, tabsData.length);
+}, []);
+```
+
+### <kbd>Tab</kbd> entra en el tablist, aterriza en la pestaña activa y luego salta al tabpanel.
+
+```tsx
+export default function Tabs() {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  ...
+  const onClick = idx => {
+    setSelectedIndex(idx);
+  };
+  ...
+  <button
+    ...
+    tabIndex={selectedIndex === idx ? 0 : -1}
+    onClick={() => onClick(idx)}
+  >...</button>
+};
+```
+
+### Navegación for teclado <kbd>Flechas derecha/izquierda</kbd> y <kbd>Home/End</kbd>
+
+```tsx
+export default function Tabs() {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  ...
+  const onKeyDown = (e, idx) => {
+    let newIndex = idx;
+    if (e.key === "ArrowRight") newIndex = (idx + 1) % tabsData.length;
+    else if (e.key === "ArrowLeft") newIndex = (idx - 1 + tabsData.length) % tabsData.length;
+    else if (e.key === "Home") newIndex = 0;
+    else if (e.key === "End") newIndex = tabsData.length - 1;
+    else return;
+
+    e.preventDefault();
+    setSelectedIndex(newIndex);
+    tabsRef.current[newIndex].focus();
+  };
+  ...
+  <button
+    ...
+    onKeyDown={e => onKeyDown(e, idx)}
+  >...</button>
+  ...
+};
+```
+
+## Referencias
+
+- <ExternalLink href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/examples/tabs-automatic/" lang="en">Example of Tabs with Automatic Activation</ExternalLink>

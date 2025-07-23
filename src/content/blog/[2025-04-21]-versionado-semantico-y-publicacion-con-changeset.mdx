@@ -1,0 +1,118 @@
+---
+title: "Capítulo 5: Versionado semántico y publicación con Changesets"
+slug: "libreria-de-componentes-en-monorepo/versionado-semantico-y-publicacion-con-changeset"
+description: "Una librería de componentes debe poder evolucionar sin romper los proyectos que la utilizan. En este capítulo veremos cómo versionar tus paquetes correctamente usando Changesets, y cómo publicarlos automáticamente con pnpm."
+categories: ["Desarrollo"]
+tags: "react,components,monorepo,changeset"
+pubDate: "2025-04-21"
+---
+
+import ExternalLink from "@/components/ExternalLink.astro";
+import InternalLink from "@/components/InternalLink.astro";
+
+<ExternalLink href="https://github.com/italodr/demo-component-library/commit/f5799870479b218af2693233c6532e8eef3b0beb">Enlace al commit en Github de este capítulo</ExternalLink>
+
+## ¿Por qué Changesets?
+
+- Permite versionar múltiples paquetes en un monorepo.
+- Controlas los cambios y su impacto semántico: patch, minor, major.
+- Integra perfectamente con CI/CD y publicación en npm.
+- Genera automáticamente el changelog.
+
+## Instalación y configuración
+
+Desde la raíz de tu proyecto:
+
+```bash
+pnpm add -D @changesets/cli -w
+pnpm changeset init
+```
+
+Estos comandos crean un directorio `.changeset/`.
+Ahora tenemos que modificar el `package.json` para añadir los siguientes scripts:
+
+```json
+"scripts": {
+  "changeset": "changeset",
+  "changeset:version": "changeset version",
+  "ci:release": "changeset tag && pnpm publish -r"
+}
+```
+
+Changeset tiene un comando que hace la release de los paquetes, pero <ExternalLink href="https://pnpm.io/using-changesets">esta es la solución recomendada por `pnpm`</ExternalLink>. Especialmente porque trabajamos en un monorepo y antes de publicarlos necesitamos que las dependencias entre paquetes se modifiquen correctamente de `workspace:*` a `x.x.x`.
+
+## Crear un changeset
+
+Cuando haces un cambio en un paquete, crea un changeset con:
+
+```bash
+pnpm changeset
+```
+
+Esto te preguntará que selecciones los paquetes que han cambiado para el tipo de versión. La verdad que es poco intuitivo, ya que si no quieres la versión `major`, que es la primera, no tienes que seleccionar ningun paquete y darle a <kbd>Enter</kbd>. Volverá a hacerte la misma pregunta para `minor`. Si vuelves a darle a <kbd>Enter</kbd>, entonces pasará a `patch`.
+
+Finalmente, tendrá que añadir el resumen de los cambios. Este resumen se aádirá automáticamente dentro del archivo `CHANGELOG.md` que creará automáticamente en el primer changeset que hagamos.
+
+Al terminar, se generará un archivo `.changeset/<nombre-del-cambio>.md`, como este:
+
+```md
+---
+"@myui/hero": patch
+---
+
+Add new hero component
+```
+
+Puedes editarlo después si lo deseas.
+
+## Versionado y changelog
+
+Para aplicar todos los cambios pendientes y generar los nuevos `package.json` y `CHANGELOG.md` ejecutamos:
+
+```bash
+pnpm changeset:version
+```
+
+Este comando hará lo siguiente:
+
+- Calcula la nueva versión de cada paquete.
+- Actualiza su `package.json`.
+- Genera o actualiza el `CHANGELOG.md`.
+- Elimina el archivo generado dentro de `.changeset/` en el apartado anterior.
+
+Una vez hecho el commit de esos cambios, los paquetes estarán listos para ser publicados.
+
+## Requisitos previos para publicar
+
+Asegúrate de tener configurado `npm` para poder publicar paquetes, una opción es tener añadir el `.npmrc` con tu token en la raíz:
+
+```text
+//registry.npmjs.org/:_authToken=tu-token
+```
+
+Otra opción es añadir el token en el `~/.npmrc` de tu sistema.
+
+El nombre del paquete se puede configurar en el `package.json` de cada paquete. En esta guía, hemos creado el componente `Hero` con el nombre `@myui/hero`. Este tipo de nombres (con el `@` al principio) se llaman <ExternalLink href="https://docs.npmjs.com/cli/v9/using-npm/scope">scope packages</ExternalLink>. Pero puede ser cualquier otro nombre sin necesidad de usar un scope.
+
+## Publicación con pnpm
+
+Para publicar todos los paquetes con su nueva versión:
+
+```bash
+pnpm ci:release
+```
+
+Esto publicará recursivamente los paquetes desde la raíz (`-r` = recursive), usando las versiones generadas por Changesets. Es importante que hagamos el commit de los cambios antes de ejecutar este comando, de lo contrario, dará error y no se publicarán los paquetes.
+
+Todo el proceso de versionado y publicación lo automatizaremos en el siguiente capítulo utilizando Github Actions.
+
+## Próximo capítulo
+
+En el Capítulo 6 configuraremos GitHub Actions para que todo esto se haga de forma automática:
+
+- Validaciones en pull requests.
+- Build + tests en cada push.
+- Publicación automática cuando se mergea a main.
+
+<InternalLink href="/libreria-de-componentes-en-monorepo/automatizacion-con-github-actions">Ir al siguiente capítulo</InternalLink><br /><br />
+<InternalLink href="/libreria-de-componentes-en-monorepo">Volver a la lista de capítulos</InternalLink>
