@@ -9,7 +9,7 @@ pubDate: "2024-02-13"
 
 import ExternalLink from "@/components/ExternalLink.astro";
 
-Aunque llevemos años aplicando buenas prácticas de accesibilidad, hay ciertos patrones WAI-ARIA que se siguen escapando en el código del día a día. En muchos casos el problema no es falta de buena voluntad, sino detalles sutiles de la especificación que resultan fáciles de pasar por alto. Estos son los errores que con más frecuencia veo —y cometo— en proyectos reales.
+Aunque llevemos años aplicando buenas prácticas de accesibilidad, hay ciertos patrones WAI-ARIA que se siguen escapando en el código del día a día. En muchos casos el problema no es falta de buena voluntad, sino detalles sutiles de la especificación que resultan fáciles de pasar por alto. Estos son los errores que con más frecuencia veo, y cometo, en proyectos reales.
 
 ## 1. Botones "div" que no se comportan como botones
 
@@ -85,7 +85,7 @@ Asignar `role="presentation"`, o su sinónimo `role="none"`, a tablas, listas o 
 
 ## 7. Etiquetado correcto de los campos de formulario
 
-Cada control de formulario —campos de texto, casillas, radios, selects y botones— necesita un nombre relevante al campo utilizado.
+Cada control de formulario (campos de texto, casillas, radios, selects y botones) necesita un nombre relevante al campo utilizado.
 
 1. En la mayoría de los casos, utiliza siempre `<label>` + `for`. La asociación explícita (for/id) amplía el área clicable y garantiza que el lector de pantalla anuncie la etiqueta correcta.
 
@@ -158,7 +158,7 @@ Marcar un botón como `aria-disabled="true"` informa al lector, pero no evita qu
 
 ## Consejos para evitar estos errores
 
-1. Te recomiendo invertir un poco de tu tiempo en formarte para el uso de lectores de pantalla (NVDA, VoiceOver)
+1. Te recomiendo invertir un poco de tu tiempo en formarte para el uso de lectores de pantalla (NVDA, VoiceOver...)
 2. Dedica un poco de tu tiempo a probar con el teclado en todos los flujos de tu aplicación.
 3. Utiliza linters y pruebas automatizadas: axe-core, storybook, etc. detectan muchos fallos antes de que lleguen a producción.
 4. Revisa la especificación <ExternalLink href="https://www.w3.org/WAI/ARIA/apg/">ARIA Authoring Practices</ExternalLink>: los patrones oficiales incluyen ejemplos de código actualizados.
