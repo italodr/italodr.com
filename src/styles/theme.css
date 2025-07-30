@@ -243,6 +243,10 @@
       margin-top: 2rem;
       margin-bottom: 2rem;
     }
+
+    .MathJax {
+      text-align: left !important;
+    }
   }
 
   [data-footnote-ref] {

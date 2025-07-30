@@ -1,0 +1,121 @@
+---
+title: "Cómo eliminar outliers con Python"
+slug: "como-eliminar-outliers-con-python"
+description: "Los outliers son valores atípicos que se desvían significativamente del patrón general de un conjunto de datos. Pueden originarse por errores de medición, datos corruptos o representar casos extremos pero válidos que requieren un análisis cuidadoso."
+categories: ["Desarrollo"]
+tags: "python,outliers,data-science"
+pubDate: "2024-02-20"
+updatedDate: "2025-06-12"
+---
+
+Los outliers (o valores atípicos) son valores que se desvían significativamente del patrón general de un conjunto de datos. Pueden originarse por errores de medición, datos corruptos o representar casos extremos pero válidos que requieren un análisis cuidadoso. Eliminarlos (o al menos tratarlos) puede mejorar la capacidad predictiva de nuestros modelos, pero hacerlo a ciegas también puede destruir información valiosa. Por eso conviene seguir un proceso cuidadoso: detectar, analizar y, sólo entonces, decidir si se eliminan, se corrigen o se mantienen.
+
+## 1. Estrategia general
+
+1. **Explora visualmente**: para ayudar a identificar los outliers, puedes utilizar diagramas de caja, boxplots, histogramas y diagramas de dispersión.
+2. **Aplica un criterio cuantitativo**: z-score, IQR, modelos de anomalía…
+3. **Valida con el contexto del dominio**: a veces el "outlier" es la observación que más te interesa (por ejemplo: fraudes, fallos o picos de ventas).
+4. **Actúa sólo sobre el conjunto de entrenamiento**: para evitar _data leakage_[^1] en modelos de ML.
+
+[^1]: _Data leakage_ es un término que se utiliza en el contexto de la inteligencia artificial y el aprendizaje automático para describir la situación en la que se incluye información no válida o no relevante en el conjunto de datos de entrenamiento, lo que puede llevar a que el modelo se sobreajuste a los datos de entrenamiento y no generalice bien a nuevos datos.
+
+## 2. Métodos estadísticos univariantes
+
+Estos métodos miran una variable a la vez y usan aritmética básica para distinguir los valores atípicos. Entre ellos, podemos encontrar las siguientes herramientas: **z-score** y Rango Intercuartílico (**IQR**)
+
+### 2.1. Desviación estándar (z-score)
+
+Este método es útil cuando los datos siguen, aproximadamente, una distribución normal.
+
+Primero se calcula la media[^2] y la desviación estándar[^3] ($$\sigma$$) de la serie. Para cada dato obtenido, se obtiene su **z-score** con la siguiente fórmula:
+
+$$z = \frac{x - \mu}{\sigma}$$
+
+El resultado indica cuántas $$\sigma$$ se aleja del centro. Los valores con un z-score mayor o menor que 3 se consideran atípicos.
+
+[^2]: La media es el promedio de los datos.
+[^3]: La desviación estándar mide, en promedio, qué tan lejos quedan los datos de esa media: cuanto mayor es $$\sigma$$, más dispersos están los valores; cuanto menor, más cerca están los valores del centro.
+
+Supongamos que tenemos los pesos de 6 personas en kg: `[70, 72, 73, 71, 74, 230]`.
+
+```python
+import numpy as np
+
+x = np.array([70, 72, 73, 71, 74, 230])
+media, sigma = x.mean(), x.std()         # media = 98.3, σ ≈ 61.6
+z = (x - media) / sigma                  # último valor tiene z ≈ 2.14
+outliers = x[np.abs(z) > 3]              # ⇒ array([], dtype=int64)
+```
+
+En este ejemplo, aunque lo que esperaríamos es que el peso de 230 kg destacase, no lo hace, ya que el valor de 230 kg está a 2.14 $$\sigma$$ de la media, por lo que no se considera un valor atípico. El problema con este método es que es muy sensible a los valores extremos. Se rompe si la distribución está muy sesgada o tiene varios picos, porque la media y $$\sigma$$ cambian mucho con los propios outliers.
+
+### 2.2. Rango Intercuartílico (IQR)
+
+Este método es útil cuando los datos no siguen una distribución normal, es decir, cuando los datos tienen sesgos o hay una cola muy larga.
+
+Los pasos a seguir son los siguientes:
+
+1. Se ordenan los datos y se calculan los percentiles 25 y 75 (Q1 y Q3), o cuartiles.
+2. Se obtiene el ancho de la "zona central" (IQR) con la fórmula: $$IQR = Q3 - Q1$$.
+3. Definimos los límites inferior (low) y superior (high) con las fórmulas[^4]:
+
+$$
+\begin{align*}
+&low = Q1 - 1.5 \times IQR \\
+&high = Q3 + 1.5 \times IQR
+\end{align*}
+$$
+
+4. Cualquier valor fuera de esos límites es un outlier, están demasiado alejados de la masa central.
+
+[^4]: 1.5 es un factor empírico que suele funcionar bien
+
+Volvamos al ejemplo anterior, pero con el método IQR:
+
+```python
+import numpy as np
+
+x = np.array([70, 72, 73, 71, 74, 230])
+q1, q3 = np.percentile(x, [25, 75])      # q1=71.25, q3=73.75
+iqr = q3 - q1                            # 2.5
+low, high = q1 - 1.5*iqr, q3 + 1.5*iqr   # 67.5 y 77.5
+outliers = x[(x < low) | (x > high)]     # ⇒ array([230])
+```
+
+En este ejemplo, el 230 si destacaría como outlier. Este método, es más robusto ante distribuciones sesgadas, ya que los cuartiles casi no cambian aunque haya valores extremos. Pero, sigue siendo un criterio global; si tu variable tiene grupos muy separados, puede marcar demasiados puntos como outliers.
+
+## 3. Métodos estadísticos multivariantes
+
+Cuando el número de variables aumenta, o la forma de la distribución es compleja, conviene usar modelos de Machine Learning diseñados para aislar puntos atípicos.
+
+### 3.1. Local Outlier Factor (LOF)
+
+Mide la densidad local alrededor de cada punto; un valor LOF alto indica que el punto está "aislado" respecto a sus vecinos.
+
+```python
+from sklearn.neighbors import LocalOutlierFactor
+
+X = df.drop(columns=['target'])
+lof = LocalOutlierFactor(n_neighbors=20, contamination='auto')
+mask = lof.fit_predict(X)  # 1 = normal, -1 = outlier
+X_clean = X[mask == 1]
+y_clean = df['target'][mask == 1]
+```
+
+### 3.2. Isolation Forest (opcional)
+
+Se construye múltiples árboles de aislamiento a partir de sub-muestras aleatorias (≈ 256 filas). En cada nodo elige al azar una variable y un punto de corte dentro de su rango, sin optimizar ninguna métrica de información. Los outliers tienden a aislarse en las primeras particiones, de modo que su longitud media de recorrido (_path length_) es corta; tras normalizarla se obtiene un _anomaly score_ entre 0 y 1 (cerca de 1 se considera una anomalía). Esta aleatoriedad y el _subsampling_ lo hacen muy escalable en grandes conjuntos numéricos de alta dimensión, aunque pierde eficacia si hay muchas variables irrelevantes o categóricas mal codificadas.
+
+```python
+from sklearn.ensemble import IsolationForest
+
+iso = IsolationForest(contamination=0.05, random_state=42)
+mask = iso.fit_predict(X)  # 1 = normal, -1 = outlier
+df_clean = df[mask == 1]
+```
+
+
+
+
+
+

@@ -8,7 +8,11 @@ import ArrowUpRight from "@/components/ArrowUpRight.astro";
 
 const posts = (await getCollection("blog"))
   .filter((post) => post.data?.draft !== true)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  .sort((a, b) => {
+    const currentPostDate = a.data.updatedDate?.valueOf() ?? a.data.pubDate.valueOf();
+    const nextPostDate = b.data.updatedDate?.valueOf() ?? b.data.pubDate.valueOf();
+    return nextPostDate - currentPostDate;
+  });
 ---
 
 <DefaultLayout title="Blog">
@@ -28,7 +32,7 @@ const posts = (await getCollection("blog"))
           <li class="article-list-item">
             <a class="article" href={`/${post.data.slug}/`}>
               <Badge class="date">
-                <FormattedDate date={post.data.pubDate} />
+                <FormattedDate date={post.data?.updatedDate ?? post.data.pubDate} />
               </Badge>
               <p class="h5 article-title">
                 {post.data.title} <ArrowUpRight class="arrow" />
