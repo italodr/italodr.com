@@ -43,10 +43,10 @@ const t = useTranslations(lang);
 
 Hey, nakama! 👋
 ───────────────────────────────────────────────────────
-This website is open source, you can see the original code on GitHub.
+This website is public, you can see the original code on GitHub.
 You can also find more information about the technologies I used to create it in the humans.txt file.
 
-🛠  Open source, you can see the original code on GitHub
+🛠  You can see the original code on GitHub
     → https://github.com/italodr/italodr.com
 
 🤖  Transparency for AI (prompting, models, etc.)
@@ -57,11 +57,40 @@ You can also find more information about the technologies I used to create it in
 -->
 <html lang={lang}>
   <head>
+    <script
+      id="Cookiebot"
+      src="https://consent.cookiebot.com/uc.js"
+      data-cbid="358e45e6-1729-472c-948b-b9ae94c69213"
+      data-blockingmode="auto"
+      type="text/javascript"></script>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-5NWJ4GQ");
+    </script>
+    <!-- End Google Tag Manager -->
     <BaseHead title={title ?? SITE_TITLE} description={description ?? t("description")} />
   </head>
 
   <body>
     <SkipLink href="#main-content">{t("skipToMainContent")}</SkipLink>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-5NWJ4GQ"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"></iframe></noscript
+    >
+    <!-- End Google Tag Manager (noscript) -->
     <Header lang={lang} />
     <main id="main-content">
       <slot />
